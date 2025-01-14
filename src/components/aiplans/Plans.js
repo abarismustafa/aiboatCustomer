@@ -13,9 +13,9 @@ export default function AiPlans() {
                     <div className="card-body p-1" style={{ background: "#bcd2f3" }}>
                         <div className="row mt-3 mx-2">
                             <div className="col-4">
-                                <PlansCards title={"Basic"} package={"$20.00 USD"} />
+                                <PlansCards title={"Basic"} package={"$130.00 USD"} />
                             </div>
-                            <div className="col-4">
+                            {/* <div className="col-4">
                                 <PlansCards title={"Optimal"} package={"$100.00 USD"} />
                             </div>
                             <div className="col-4">
@@ -29,7 +29,7 @@ export default function AiPlans() {
                             </div>
                             <div className="col-4">
                                 <PlansCards title={"Platinum"} package={"$2,000.00 USD"} />
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

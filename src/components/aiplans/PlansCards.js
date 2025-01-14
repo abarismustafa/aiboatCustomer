@@ -17,25 +17,25 @@ export default function PlansCards(props){
         <div className="border border-1 bordder-black mb-3"></div>
         <ul className="list-unstyled">
           <li className="mt-2 d-flex align-items-center justify-content-between">
-            <span><span className="text-success">✔</span> Business Volume (BV): 2</span>
+            <span><span className="text-success">✔</span> Matching Bonus: $5 USD</span>
             <button type="button" className="btn btn-link text-decoration-none" title="More info" onClick={handleShow}>
             <CiCircleQuestion />
             </button>
           </li>
           <li className="mt-2 d-flex align-items-center justify-content-between">
-            <span><span className="text-success">✔</span> Referral Commission: $1.00 USD</span>
+            <span><span className="text-success">✔</span> Referral Income: $25.00 USD</span>
             <button type="button" className="btn btn-link text-decoration-none" title="More info" onClick={handleShow}>
             <CiCircleQuestion />
             </button>
           </li>
           <li className="mt-2 d-flex align-items-center justify-content-between ">
-            <span><span className="text-success">✔</span> Tree Commission: $0.99 USD</span>
+            <span><span className="text-success">✔</span> level Income: $25 USD - $0.5 USD</span>
             <button type="button" className="btn btn-link  text-decoration-none" title="More info" onClick={handleShow}>
             <CiCircleQuestion />
             </button>
           </li>
           <li className="mt-2 d-flex align-items-center justify-content-between ">
-            <span><span className="text-success">✔</span> Daily Ad View Limit: 5 </span>
+            <span><span className="text-success">✔</span>Earn upto 760 USD $ Daily From Matching Bonus </span>
             <button type="button" className="btn btn-link text-decoration-none" title="More info" onClick={handleShow}>
             <CiCircleQuestion />
             </button>
