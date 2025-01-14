@@ -1,6 +1,6 @@
 
 import { Link, useNavigate } from 'react-router-dom'
-import imageLogo from '../../asesets/logo/logoPlay.jpeg'
+import imageLogo from '../../asesets/logo/image-1735806975230.png'
 function MerchantLoginHeader({ loginForm, handleSubmitBack, currentPage }) {
 
     const clocal = window.localStorage.getItem('userToken')
