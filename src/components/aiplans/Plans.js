@@ -9,7 +9,7 @@ export default function AiPlans() {
             </div>
             <div className="ContentArea">
                 <div className="card">
-                    <div className="card-header"><span>plans</span></div>
+                    <div className="card-header"><span>plan</span></div>
                     <div className="card-body p-1" style={{ background: "#bcd2f3" }}>
                         <div className="row mt-3 mx-2">
                             <div className="col-4">
