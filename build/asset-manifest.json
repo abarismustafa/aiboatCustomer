@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/static/css/main.b3f46666.css",
+    "main.js": "/static/js/main.2a285d3d.js",
+    "static/js/213.95e72210.chunk.js": "/static/js/213.95e72210.chunk.js",
+    "static/js/667.4da6243b.chunk.js": "/static/js/667.4da6243b.chunk.js",
+    "static/js/453.30d8b385.chunk.js": "/static/js/453.30d8b385.chunk.js",
+    "static/media/premium_photo-1664476845274-27c2dabdd7f0.jpeg": "/static/media/premium_photo-1664476845274-27c2dabdd7f0.4f0de3fc39ca4cf35499.jpeg",
+    "static/media/pay-qr.jpg": "/static/media/pay-qr.e70bffe416a3171bc622.jpg",
+    "static/media/what-is-bank-nifty-meaning (1).jpg": "/static/media/what-is-bank-nifty-meaning (1).9f5d54d3e64ab0d5814c.jpg",
+    "static/media/image-1735806975230.png": "/static/media/image-1735806975230.acf02c7328d52086fb69.png",
+    "static/media/close.svg": "/static/media/close.d0690aa795f06bb679bfa90bd520bc26.svg",
+    "index.html": "/index.html",
+    "main.b3f46666.css.map": "/static/css/main.b3f46666.css.map",
+    "main.2a285d3d.js.map": "/static/js/main.2a285d3d.js.map",
+    "213.95e72210.chunk.js.map": "/static/js/213.95e72210.chunk.js.map",
+    "667.4da6243b.chunk.js.map": "/static/js/667.4da6243b.chunk.js.map",
+    "453.30d8b385.chunk.js.map": "/static/js/453.30d8b385.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b3f46666.css",
+    "static/js/main.2a285d3d.js"
+  ]
+}

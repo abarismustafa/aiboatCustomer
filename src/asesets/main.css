@@ -29528,7 +29528,7 @@ aside.SidebarMain .MenuItem .SubmenuItems ul li a::before {
 }
 
 .HeaderContainer {
-  background: #000;
+  background: #2c5aa9;
 }
 
 .invalid {
@@ -29565,9 +29565,9 @@ aside.SidebarMain .MenuItem .SubmenuItems ul li a::before {
 .buttonArea .login-area {
   width: 103px;
   height: 37px;
-  border: 1px solid #8BC540;
+  border: 1px solid #2c5ca6;
   border-radius: 1111px;
-  color: #8BC540;
+  color: #2b5ca6;
 }
 
 .buttonArea .sign-area {
@@ -29636,12 +29636,12 @@ aside.SidebarMain .MenuItem .SubmenuItems ul li a::before {
 }
 
 .input-group-text svg {
-  color: #8BC540;
+  color: #2c5ca6;
 }
 
 .btn-login {
   width: 100%;
-  background: -webkit-linear-gradient(right, #2227cd, #a1f733, #1015bf, #a5ef44);
+  background: -webkit-linear-gradient(right, #2227cd, #7a0e9f, #1015bf, #7a0e9f);
   padding: 10px;
   text-align: center;
   border-radius: 13px !important;

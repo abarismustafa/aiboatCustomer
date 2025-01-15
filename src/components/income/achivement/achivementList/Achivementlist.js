@@ -20,13 +20,13 @@ function Achivementlist() {
                                         </div> */}
                                     <table id="banner-tblwrapper" className="table dataTable no-footer" role="grid" aria-describedby="banner-tblwrapper_info">
                                         <thead>
-                                                <tr role="row">
-                                                    <th style={{ width: '50px' }}>#</th>
-                                                    <th style={{ width: '150px' }}>Income</th>
-                                                    <th style={{ width: '150px' }}>Date</th>
-                                                    
-                                                </tr>
-                                            </thead>
+                                            <tr role="row">
+                                                <th style={{ width: '50px' }}>#</th>
+                                                <th style={{ width: '150px' }}>Income</th>
+                                                <th style={{ width: '150px' }}>Date</th>
+
+                                            </tr>
+                                        </thead>
                                         <tbody>
                                             <tr role="row">
                                                 <td colSpan={3}>

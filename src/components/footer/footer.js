@@ -140,7 +140,7 @@ PlayNIF50 confirms that this Privacy Policy is only a description of its operati
       <Container>
         <Row className="align-items-center footerrowsignclass">
           <Col xs={12} md={6} className="text-center text-md-start mb-3 mb-md-0">
-            <small>&copy; 2024 Nifty League - All Rights Reserved.</small>
+            <small>&copy; 2025 AIBOT - All Rights Reserved.</small>
           </Col>
           <Col xs={12} md={6} className="text-center text-md-end">
             <Nav className="justify-content-center justify-content-md-end">

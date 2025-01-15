@@ -1,19 +1,18 @@
 import React from 'react'
 
 function RenewalTradingForm() {
-  return (
-    <>
-    <div className="row m-4">
-        <div className="col-xl-12">
-
-            <div className="card">
-                <div className="card-body p-0">
-                    <div className="table-responsive active-projects style-1">
-                        <div className="tbl-caption tbl-caption-2">
-                            <h4 className="heading mb-0 p-2">Add Renewal Trading</h4>
-                        </div>
-                        <form className="tbl-captionn">
-                            <div className="row">
+    return (
+        <>
+            <div className="PageHeading">
+                <h1>Renewal Trading</h1>
+            </div>
+            <div className="ContentArea">
+                <div className="card">
+                    <div className="card-header"><span>Add Renewal Trading</span></div>
+                    <div className="card-body">
+                        <form action="" method="post" name="frmReport" id="frmReport">
+                            <input type="hidden" id="hidID" name="hidID" />
+                            <div className="form-row" >
                                 <div className="col-xl-4 mb-3">
                                     <label for="exampleFormControlInput1" class="form-label">User ID</label>
                                     <input
@@ -46,8 +45,8 @@ function RenewalTradingForm() {
                                     // onChange={handleChange}
                                     />
                                 </div>
-                                
-                                <div className="col-xl-4">
+
+                                <div className="col-xl-12">
                                     <button type="button" className="btn btn-primary mt-5">
                                         Submit
                                     </button>
@@ -56,11 +55,9 @@ function RenewalTradingForm() {
                         </form>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</>
-  )
+            </div >
+        </>
+    )
 }
 
 export default RenewalTradingForm

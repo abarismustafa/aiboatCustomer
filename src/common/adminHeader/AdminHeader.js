@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import logo from '../../asesets/logo/logoPlay.jpeg'
+import logo from '../../asesets/logo/image-1735806975230.png'
 import { SiPaytm } from "react-icons/si";
 import { Await, Link, useNavigate } from 'react-router-dom';
 import { Getprofile, WalletsShow, notifications, notificationsList } from '../../api/login/Login';

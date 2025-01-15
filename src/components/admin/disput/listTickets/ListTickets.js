@@ -213,15 +213,6 @@ function ListTickets() {
                         <form action="" method="post" name="frmReport" id="frmReport">
                             <input type="hidden" id="hidID" name="hidID" />
                             <div className="form-row" style={{ alignItems: 'end' }}>
-                                {/* <div className="form-group col-md-4">
-                                    <label htmlFor="txtUserId">Min Amount</label>
-                                    <input type="number" name="min_amt" id="account_no" className="form-control" value={filterInitial.min_amt} onChange={handleChange} />
-                                </div>
-                                <div className="form-group col-md-4">
-                                    <label htmlFor="txtUserId">Max Amount</label>
-                                    <input type="number" name="max_amt" id="account_no" className="form-control" value={filterInitial.max_amt} onChange={handleChange} />
-                                </div> */}
-
                                 <div className="form-group col-md-4">
                                     <label htmlFor="txtUserId">Start Date</label>
                                     <input type="date" name="start_date" id="account_no" max={currentDate} defaultValue={currentDate} value={filterInitial.start_date} className="form-control" onChange={handleChange} />

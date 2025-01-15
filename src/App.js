@@ -284,7 +284,6 @@ function App() {
 
 
       <Routes>
-
         <Route path='login-area' element={<MerchantLoginAreaPage />} />
         <Route path='Signup' element={<SinUpMerchantPage position={position} />} />
         <Route path='signup/:id' element={<SinUpMerchantPage position={position} />} />
@@ -297,7 +296,7 @@ function App() {
           {/* <Route path="" element={<DasBoardPage />} > */}
           {/* <Route path='/Dashboard' element={<DaseboardCheckPage walletData={walletData} services={services} />} /> */}
           <Route path="/home/playNif50" element={<PlayNif50Page />} />
-          <Route path='dashboard/playNif' element={<DashboardPalyNifPage />} />
+          <Route path='dashboard' element={<DashboardPalyNifPage />} />
 
           <Route path='wallet-report' element={<WalletReportPage />} />
           <Route path='contest-payment-report' element={<ContestPaymentReportPage />} />
