@@ -13,6 +13,9 @@ import { LiaServicestack } from "react-icons/lia";
 import { FaMoneyCheckAlt } from "react-icons/fa";
 import { FaBlog } from "react-icons/fa";
 import { MdOutlinePayment } from "react-icons/md";
+import { PiPlantFill } from "react-icons/pi";
+import { MdAccountBalanceWallet } from "react-icons/md";
+import { ImTree } from "react-icons/im";
 
 
 function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenNoti, services, isSidebarOpen, isOpen }) {
@@ -83,6 +86,9 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
         Cruise1: false,
         GoatAllReport1: false,
         Withdraw: false,
+        mytree: false,
+        plan: false,
+        balancetransfer: false,
         transfer: false,
         income: false,
         network: false,
@@ -189,6 +195,9 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
             Cruise1: false,
             GoatAllReport1: false,
             Withdraw: false,
+            mytree: false,
+            plan: false,
+            balancetransfer: false,
             transfer: false,
             income: false,
             network: false,
@@ -899,6 +908,18 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                                         <li onClick={handleMenuClick}>
                                             <NavLink to="contest-payment-report">Contest Pyment Report</NavLink>
                                         </li>
+                                        <li onClick={handleMenuClick}>
+                                            <NavLink to="referralcommissions">Referral Commissions</NavLink>
+                                        </li>
+                                        <li onClick={handleMenuClick}>
+                                            <NavLink to="binarycommission">Binary Commission</NavLink>
+                                        </li>
+                                        <li onClick={handleMenuClick}>
+                                            <NavLink to="transactions">Transactions</NavLink>
+                                        </li>
+                                        <li onClick={handleMenuClick}>
+                                            <NavLink to="investment">Investment</NavLink>
+                                        </li>
 
 
                                         {/* {storedUserType === 'Super Distributor' || storedUserType === 'Distributor' ? (
@@ -1231,8 +1252,30 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                                 </li> */}
                             </ul>
                         </div>
+                    </div>                    <div className="MenuItem">
+                        <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
+                            <NavLink to="mytree">
+                                <ImTree style={{ marginRight: '10px' }} />
+                                <span>My Tree</span>
+                            </NavLink>
+                        </div>
                     </div>
-
+                    <div className="MenuItem">
+                        <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
+                            <NavLink to="plan">
+                                <PiPlantFill style={{ marginRight: '10px' }} />
+                                <span>Plan</span>
+                            </NavLink>
+                        </div>
+                    </div>
+                    <div className="MenuItem">
+                        <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
+                            <NavLink to="balancetransfer">
+                                <MdAccountBalanceWallet style={{ marginRight: '10px' }} />
+                                <span>Balance Transfer</span>
+                            </NavLink>
+                        </div>
+                    </div>
                     <div className="MenuItem ">
                         <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
                             <Link href="#" onClick={() => { changeOpen(!allAside.income, "income"); }}>

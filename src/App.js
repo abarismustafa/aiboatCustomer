@@ -183,6 +183,14 @@ import WalletHaistoryReporyts from "./pages/financial/wallethistory";
 import RewardsReports from "./pages/reward/rewards";
 import SupportsReports from "./pages/support/supports";
 import SupportsForm from "./components/supports/supportsForm/SupportsForm";
+import BalanceTransfer from './pages/balancetransfer';
+import Plans from './pages/aiplans';
+import MyTree from './pages/mytree';
+import DepositMethod from './pages/depositmethord';
+import ReferralCommissions from './pages/referralcommissions';
+import BinaryCommission from './pages/binarycommission';
+import { Transactions } from './pages/transactions';
+import Investment from './pages/investment';
 
 
 function App() {
@@ -416,6 +424,18 @@ function App() {
           <Route path="aibot/rewards-reports" element={<RewardsReports />} />
           <Route path="aibot/supports-reports" element={<SupportsReports />} />
           <Route path="aibot/supports-create" element={<SupportsForm />} />
+
+
+          {/* .................. Atif ................ */}
+          <Route path="balancetransfer" element={<BalanceTransfer />} />
+          <Route path="plan" element={<Plans />} />
+          <Route path="mytree" element={<MyTree />} />
+          <Route path="depositmethod" element={<DepositMethod />} />
+          <Route path="referralcommissions" element={<ReferralCommissions />} />
+          <Route path="binarycommission" element={<BinaryCommission />} />
+          <Route path="transactions" element={<Transactions />} />
+          <Route path="investment" element={<Investment />} />
+
 
           {/* neRoute */}
 
