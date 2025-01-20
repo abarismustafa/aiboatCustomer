@@ -16,8 +16,8 @@ import { MdOutlinePayment } from "react-icons/md";
 import { PiPlantFill } from "react-icons/pi";
 import { MdAccountBalanceWallet } from "react-icons/md";
 import { ImTree } from "react-icons/im";
+import { FaRupeeSign } from "react-icons/fa";
 
-import { FaRegMoneyBillAlt } from "react-icons/fa";
 
 function AsideAdmin({
   isActive,
@@ -1525,91 +1525,84 @@ function AsideAdmin({
                   {/* <li>
                                     <Link to="Retailer_authentication">OTP Security</Link>
                                 </li> */}
-                </ul>
-              </div>
-            </div>{" "}
-            <div className="MenuItem">
-              <div
-                className="card-header card-header-header"
-                onClick={(e) => {
-                  changAllAside(e);
-                }}
-              >
-                <NavLink to="mytree">
-                  <ImTree style={{ marginRight: "10px" }} />
-                  <span>My Tree</span>
-                </NavLink>
-              </div>
-            </div>
-            <div className="MenuItem">
-              <div
-                className="card-header card-header-header"
-                onClick={(e) => {
-                  changAllAside(e);
-                }}
-              >
-                <NavLink to="plan">
-                  <PiPlantFill style={{ marginRight: "10px" }} />
-                  <span>Plan</span>
-                </NavLink>
-              </div>
-            </div>
-            <div className="MenuItem">
-              <div
-                className="card-header card-header-header"
-                onClick={(e) => {
-                  changAllAside(e);
-                }}
-              >
-                <NavLink to="balancetransfer">
-                  <MdAccountBalanceWallet style={{ marginRight: "10px" }} />
-                  <span>Balance Transfer</span>
-                </NavLink>
-              </div>
-            </div>
-            <div className="MenuItem ">
-              <div
-                className="card-header collapsed"
-                id="headingSettings"
-                data-toggle="collapse"
-                data-target="#collapseSettings"
-                aria-expanded="false"
-                aria-controls="collapseSettings"
-              >
-                <Link
-                  href="#"
-                  onClick={() => {
-                    changeOpen(!allAside.income, "income");
-                  }}
-                >
-                  <i>
-                    <svg
-                      x={0}
-                      y={0}
-                      viewBox="0 0 16 16"
-                      className="sm-svg default-svg"
-                    >
-                      <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
-                    </svg>
-                  </i>
-                  <span>Income</span>
-                  <i className="ic">
-                    <svg x={0} y={0} viewBox="0 0 7 11">
-                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                    </svg>
-                  </i>
-                </Link>
-              </div>
-              <div
-                id="collapseSettings"
-                className={`SubmenuItems collapse ${
-                  allAside.income ? "mm-show" : "extra"
-                }`}
-                aria-labelledby="headingSettings"
-                data-parent="#accordion"
-              >
-                <ul>
-                  {/* <li onClick={handleMenuClick}>
+                            </ul>
+                        </div>
+                    </div>             
+                    
+                    <div className="MenuItem ">
+                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
+                            <Link href="#" onClick={() => { changeOpen(!allAside.transfer, "transfer"); }}>
+                            <FaRupeeSign />
+                                <span>Income</span>
+                                <i className="ic">
+                                    <svg x={0} y={0} viewBox="0 0 7 11">
+                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                                    </svg>
+                                </i>
+                            </Link>
+                        </div>
+                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.transfer ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
+                            <ul>
+                                {/* <li onClick={handleMenuClick}>
+                                    <Link to="shipping_Address">Shipping Address</Link>
+                                </li> */}
+                                <li onClick={handleMenuClick}>
+                                    <NavLink to="banary-income">Binary Income</NavLink>
+                                </li>
+
+                                <li onClick={handleMenuClick}>
+                                    <NavLink to="rep-income">Repurchase Income</NavLink>
+                                </li>
+                                {/* <li>
+                                    <Link to="Retailer_authentication">OTP Security</Link>
+                                </li> */}
+                            </ul>
+                        </div>
+                    </div> 
+                    
+                           <div className="MenuItem">
+                        <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
+                            <NavLink to="mytree">
+                                <ImTree style={{ marginRight: '10px' }} />
+                                <span>My Tree</span>
+                            </NavLink>
+                        </div>
+                    </div>
+                    <div className="MenuItem">
+                        <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
+                            <NavLink to="plan">
+                                <PiPlantFill style={{ marginRight: '10px' }} />
+                                <span>Plan</span>
+                            </NavLink>
+                        </div>
+                    </div>
+                    <div className="MenuItem">
+                        <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
+                            <NavLink to="balancetransfer">
+                                <MdAccountBalanceWallet style={{ marginRight: '10px' }} />
+                                <span>Balance Transfer</span>
+                            </NavLink>
+                        </div>
+                    </div>
+                    <div className="MenuItem ">
+                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
+                            <Link href="#" onClick={() => { changeOpen(!allAside.income, "income"); }}>
+                                <i>
+                                    <svg x={0} y={0} viewBox="0 0 16 16" className="sm-svg default-svg">
+                                        <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
+                                    </svg>
+                                </i>
+                                <span>Income</span>
+                                <i className="ic">
+                                    <svg x={0} y={0} viewBox="0 0 7 11">
+                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                                    </svg>
+                                </i>
+                            </Link>
+                        </div>
+                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.income ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
+                            <ul>
+                                {/* <li onClick={handleMenuClick}>
                                     <Link to="shipping_Address">Shipping Address</Link>
                                 </li> */}
                   <li onClick={handleMenuClick}>
