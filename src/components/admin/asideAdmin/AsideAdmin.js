@@ -1203,10 +1203,10 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                                     <NavLink to="rejected-list-withdraw-request/Rejected">Transfer E-pin</NavLink>
                                 </li>
                                 <li onClick={handleMenuClick}>
-                                    <NavLink to="all-list-withdraw-request/All">E-pin Transfer Report</NavLink>
+                                    <NavLink to="transactions">E-pin Transfer Report</NavLink>
                                 </li>
                                 <li onClick={handleMenuClick}>
-                                    <NavLink to="all-list-withdraw-request/All">E-pin Received Report</NavLink>
+                                    <NavLink to="investment">E-pin Received Report</NavLink>
                                 </li>
 
 
