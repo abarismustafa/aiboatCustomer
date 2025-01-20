@@ -191,6 +191,11 @@ import ReferralCommissions from './pages/referralcommissions';
 import BinaryCommission from './pages/binarycommission';
 import { Transactions } from './pages/transactions';
 import Investment from './pages/investment';
+import RepurchaseIncome from './pages/repurchaseincome';
+import BinaryIncome from './pages/binaryincome';
+import EpinTransferReport from './pages/epintransferreport';
+import EpinReceivedReport from './pages/epinreceivedreport';
+import TransferEpin from './pages/transferepin';
 
 
 function App() {
@@ -435,7 +440,11 @@ function App() {
           <Route path="binarycommission" element={<BinaryCommission />} />
           <Route path="transactions" element={<Transactions />} />
           <Route path="investment" element={<Investment />} />
-
+          <Route path="rep-income" element={<RepurchaseIncome />} />
+          <Route path="banary-income" element={<BinaryIncome />} />
+          <Route path="epintransferreport" element={<EpinTransferReport />} />
+          <Route path="epinreceivedreport" element={<EpinReceivedReport/>} />
+          <Route path="transferepin" element={<TransferEpin/>} />
 
           {/* neRoute */}
 
