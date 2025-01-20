@@ -1,11 +1,10 @@
-import MerchantLoginArea from "../../components/merchantLoginArea/MerchantLoginArea"
-
+import MerchantLoginArea from "../../components/merchantLoginArea/MerchantLoginArea";
 
 function MerchantLoginAreaPage() {
-    return (
-        <>
-            <MerchantLoginArea />
-        </>
-    )
+  return (
+    <>
+      <MerchantLoginArea />
+    </>
+  );
 }
-export default MerchantLoginAreaPage
+export default MerchantLoginAreaPage;

@@ -1,10 +1,10 @@
-import WalletReport from "../../../components/admin/walletReport/WalletReport"
+import WalletReport from "../../../components/admin/walletReport/WalletReport";
 
 function WalletReportPage() {
-    return (
-        <>
-            <WalletReport />
-        </>
-    )
+  return (
+    <>
+      <WalletReport />
+    </>
+  );
 }
-export default WalletReportPage
+export default WalletReportPage;

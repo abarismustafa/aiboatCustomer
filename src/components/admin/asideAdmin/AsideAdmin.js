@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
-import { Link, NavLink, useNavigate } from "react-router-dom"
-import { userValidate } from "../../../api/login/Login"
+import { useEffect, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { userValidate } from "../../../api/login/Login";
 import { MdOutlineNotificationsActive } from "react-icons/md";
 // import paymentIcon from "../../../asesets/adminImage/hand-money-rupee-coin-icon.svg";
 import { MdOutlineDisplaySettings } from "react-icons/md";
@@ -19,61 +19,215 @@ import { ImTree } from "react-icons/im";
 import { FaRupeeSign } from "react-icons/fa";
 
 
-function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenNoti, services, isSidebarOpen, isOpen }) {
-    // console.log("services", services);
-    const navigate = useNavigate()
-    const [report, setReport] = useState(false)
-    const [payment, setPayment] = useState(false)
-    const [setting, setSetting] = useState(false)
+function AsideAdmin({
+  isActive,
+  overlayClick,
+  handleMenuClick,
+  clickoVer,
+  tokenNoti,
+  services,
+  isSidebarOpen,
+  isOpen,
+}) {
+  // console.log("services", services);
+  const navigate = useNavigate();
+  const [report, setReport] = useState(false);
+  const [payment, setPayment] = useState(false);
+  const [setting, setSetting] = useState(false);
 
-    const logoutPage = () => {
-        window.localStorage.setItem('login', false)
-        navigate('/home')
-        window.location.reload()
+  const logoutPage = () => {
+    window.localStorage.setItem("login", false);
+    navigate("/home");
+    window.location.reload();
+  };
+
+  const logOut = () => {
+    window.localStorage.removeItem("userToken");
+    window.localStorage.removeItem("userIdToken");
+    window.localStorage.removeItem("openMenu");
+
+    // window.location.reload()
+    navigate("/login-area");
+  };
+  const [retailer, setretailer] = useState(false);
+  const [distributer, setDistributer] = useState(false);
+  const [superdistributer, setsuperDistributer] = useState(false);
+
+  const valdateApi = async () => {
+    try {
+      const res = await userValidate();
+      // console.log(res.data);
+      if (res.data.user_type_id?._id == "65e2f15785bfd78f9866c090") {
+        setretailer(true);
+      }
+      if (res.data.user_type_id?._id == "65f3fb87a6a2a92f979b47eb") {
+        setsuperDistributer(true);
+      }
+
+      if (res.data.user_type_id?._id == "65e2f1a585bfd78f9866c09b") {
+        setDistributer(true);
+      }
+    } catch (error) {}
+  };
+  useEffect(() => {
+    valdateApi();
+  }, []);
+
+  const [allAside, setAllAside] = useState({
+    report: false,
+    payment: false,
+    setting: false,
+    disput: false,
+    disput: false,
+    services: false,
+    loan: false,
+    network: false,
+    earning: false,
+    viaggoHotel: false,
+    viaggoVisa: false,
+    Accounts1: false,
+    flight1: false,
+    bus1: false,
+    Holidays1: false,
+    Cruise1: false,
+    GoatAllReport1: false,
+    Withdraw: false,
+    mytree: false,
+    plan: false,
+    balancetransfer: false,
+    transfer: false,
+    income: false,
+    network: false,
+    deposit: false,
+    robot: false,
+    buySell: false,
+    helpSupport: false,
+    AIBOT20: false,
+    financial: false,
+    staking: false,
+    rewards: false,
+    manageEpin: false,
+  });
+
+  const changAllAside = (e) => {
+    handleMenuClick(e);
+    const clone = { ...allAside };
+    for (const iterator in clone) {
+      clone[iterator] = false;
     }
+    setAllAside(clone);
+  };
+  // const routeMap = {
+  //     "Aeps Cash Deposit": "/aeps-cash-deposit",
+  //     "Credit Card": "/ccbill_payment_report",
+  //     "Electricity": "/electricity-bills",
+  //     "Recharge": "/mobile-reacharge",
+  //     "DTH": "/dth-reacharge",
+  //     "Gas": "/gas-bills",
+  //     "Mobile Postpaid": "/postpaid-recharge",
+  //     "Broadband Postpaid": "/Boardband",
+  //     "CMS": "/airtel-cms",
+  //     "Landline Postpaid": "/landline-bills",
+  //     "Aeps Adhaar pay": "/aeps-OnBoarded",
 
+  //     "Fastag": "/fastag-recharge",
+  //     "DMT": "/money-transfer",
+  //     "Water": "/water-bills",
+  //     "Aeps Bank Withdraw": "/aeps-OnBoarded",
+  // };
 
-    const logOut = () => {
-        window.localStorage.removeItem('userToken')
-        window.localStorage.removeItem('userIdToken')
-        window.localStorage.removeItem('openMenu')
+  // const filteredServices = services && Array.isArray(services)
+  // ? services.filter(service =>
+  //     routeMap[service.service_name] &&
+  //     !["Aeps Cash Deposit", "Aeps Bank Withdraw", "Aeps Adhaar pay"].includes(service.service_name)
+  // )
+  // : [];
+  const routeMap = {
+    206: "/aeps-cash-deposit",
+    19: "/ccbill_payment_report",
+    18: "/electricity-bills",
+    33: "/mobile-reacharge",
+    13: "/dth-reacharge",
+    11: "/gas-bills",
+    10: "/postpaid-recharge",
+    5: "/Boardband",
+    35: "/airtel-cms",
+    12: "/landline-bills",
+    208: "/aeps-OnBoarded",
+    207: "/aeps-OnBoarded",
+    9: "/fastag-recharge",
+    188: "/money-transfer",
+    28: "/water-bills",
+    15: "/health-insurance-bill",
+  };
 
-        // window.location.reload()
-        navigate('/login-area')
+  const filteredServices =
+    services && Array.isArray(services)
+      ? services.filter(
+          (service) =>
+            routeMap[service._id] &&
+            !["206", "207", "208"].includes(service._id)
+        )
+      : [];
+
+  const changeOpen = (val, str) => {
+    const clone = { ...allAside };
+    for (const iterator in clone) {
+      if (iterator == str) {
+        clone[str] = val;
+        window.localStorage.setItem("openMenu", str);
+      } else {
+        clone[iterator] = false;
+      }
     }
-    const [retailer, setretailer] = useState(false)
-    const [distributer, setDistributer] = useState(false)
-    const [superdistributer, setsuperDistributer] = useState(false)
+    setAllAside(clone);
+  };
 
-    const valdateApi = async () => {
-        try {
-            const res = await userValidate()
-            // console.log(res.data);
-            if (res.data.user_type_id?._id == '65e2f15785bfd78f9866c090') {
-                setretailer(true);
-            } if (res.data.user_type_id?._id == '65f3fb87a6a2a92f979b47eb') {
-                setsuperDistributer(true)
-            }
-
-            if (res.data.user_type_id?._id == '65e2f1a585bfd78f9866c09b') {
-                setDistributer(true)
-            }
-
-        } catch (error) {
-
-        }
-    }
-    useEffect(() => {
-        valdateApi()
-    }, [])
-
-
-    const [allAside, setAllAside] = useState({
+  useEffect(() => {
+    const obj = {
+      report: false,
+      payment: false,
+      setting: false,
+      disput: false,
+      package: false,
+      services: false,
+      loan: false,
+      network: false,
+      earning: false,
+      viaggoHotel: false,
+      viaggoVisa: false,
+      Accounts1: false,
+      flight1: false,
+      bus1: false,
+      Holidays1: false,
+      Cruise1: false,
+      GoatAllReport1: false,
+      Withdraw: false,
+      mytree: false,
+      plan: false,
+      balancetransfer: false,
+      transfer: false,
+      income: false,
+      network: false,
+      deposit: false,
+      robot: false,
+      buySell: false,
+      helpSupport: false,
+      AIBOT20: false,
+      financial: false,
+      staking: false,
+      rewards: false,
+      manageEpin: false,
+      payoutReport: false,
+    };
+    const target = window.localStorage.getItem("openMenu");
+    if (!window.localStorage.getItem("openMenu")) {
+      setAllAside({
         report: false,
         payment: false,
         setting: false,
         disput: false,
-        disput: false,
+        package: false,
         services: false,
         loan: false,
         network: false,
@@ -87,9 +241,6 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
         Cruise1: false,
         GoatAllReport1: false,
         Withdraw: false,
-        mytree: false,
-        plan: false,
-        balancetransfer: false,
         transfer: false,
         income: false,
         network: false,
@@ -102,184 +253,53 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
         staking: false,
         rewards: false,
         manageEpin: false,
-
-    });
-
-    const changAllAside = (e) => {
-        handleMenuClick(e)
-        const clone = { ...allAside };
-        for (const iterator in clone) {
-            clone[iterator] = false;
-        }
-        setAllAside(clone);
-    }
-    // const routeMap = {
-    //     "Aeps Cash Deposit": "/aeps-cash-deposit",
-    //     "Credit Card": "/ccbill_payment_report",
-    //     "Electricity": "/electricity-bills",
-    //     "Recharge": "/mobile-reacharge",
-    //     "DTH": "/dth-reacharge",
-    //     "Gas": "/gas-bills",
-    //     "Mobile Postpaid": "/postpaid-recharge",
-    //     "Broadband Postpaid": "/Boardband",
-    //     "CMS": "/airtel-cms",
-    //     "Landline Postpaid": "/landline-bills",
-    //     "Aeps Adhaar pay": "/aeps-OnBoarded",
-
-    //     "Fastag": "/fastag-recharge",
-    //     "DMT": "/money-transfer",
-    //     "Water": "/water-bills",
-    //     "Aeps Bank Withdraw": "/aeps-OnBoarded",
-    // };
-
-    // const filteredServices = services && Array.isArray(services)
-    // ? services.filter(service => 
-    //     routeMap[service.service_name] && 
-    //     !["Aeps Cash Deposit", "Aeps Bank Withdraw", "Aeps Adhaar pay"].includes(service.service_name)
-    // )
-    // : [];
-    const routeMap = {
-        "206": "/aeps-cash-deposit",
-        "19": "/ccbill_payment_report",
-        "18": "/electricity-bills",
-        "33": "/mobile-reacharge",
-        "13": "/dth-reacharge",
-        "11": "/gas-bills",
-        "10": "/postpaid-recharge",
-        "5": "/Boardband",
-        "35": "/airtel-cms",
-        "12": "/landline-bills",
-        "208": "/aeps-OnBoarded",
-        "207": "/aeps-OnBoarded",
-        "9": "/fastag-recharge",
-        "188": "/money-transfer",
-        "28": "/water-bills",
-        "15": "/health-insurance-bill",
-    };
-
-    const filteredServices = services && Array.isArray(services)
-        ? services.filter(service =>
-            routeMap[service._id] &&
-            !["206", "207", "208"].includes(service._id)
-        )
-        : [];
-
-    const changeOpen = (val, str) => {
-        const clone = { ...allAside };
-        for (const iterator in clone) {
-            if (iterator == str) {
-                clone[str] = val;
-                window.localStorage.setItem('openMenu', str)
-            } else {
-                clone[iterator] = false;
-            }
-        }
-        setAllAside(clone);
-    };
-
-    useEffect(() => {
-        const obj = {
-            report: false,
-            payment: false,
-            setting: false,
-            disput: false,
-            package: false,
-            services: false,
-            loan: false,
-            network: false,
-            earning: false,
-            viaggoHotel: false,
-            viaggoVisa: false,
-            Accounts1: false,
-            flight1: false,
-            bus1: false,
-            Holidays1: false,
-            Cruise1: false,
-            GoatAllReport1: false,
-            Withdraw: false,
-            mytree: false,
-            plan: false,
-            balancetransfer: false,
-            transfer: false,
-            income: false,
-            network: false,
-            deposit: false,
-            robot: false,
-            buySell: false,
-            helpSupport: false,
-            AIBOT20: false,
-            financial: false,
-            staking: false,
-            rewards: false,
-            manageEpin: false,
-        }
-        const target = window.localStorage.getItem('openMenu')
-        if (!window.localStorage.getItem('openMenu')) {
-            setAllAside({
-                report: false,
-                payment: false,
-                setting: false,
-                disput: false,
-                package: false,
-                services: false,
-                loan: false,
-                network: false,
-                earning: false,
-                viaggoHotel: false,
-                viaggoVisa: false,
-                Accounts1: false,
-                flight1: false,
-                bus1: false,
-                Holidays1: false,
-                Cruise1: false,
-                GoatAllReport1: false,
-                Withdraw: false,
-                transfer: false,
-                income: false,
-                network: false,
-                deposit: false,
-                robot: false,
-                buySell: false,
-                helpSupport: false,
-                AIBOT20: false,
-                financial: false,
-                staking: false,
-                rewards: false,
-                manageEpin: false,
-            })
+        payoutReport: false,
+      });
+    } else {
+      for (const iterator in obj) {
+        if (iterator == target) {
+          obj[target] = true;
         } else {
-
-            for (const iterator in obj) {
-                if (iterator == target) {
-                    obj[target] = true;
-                } else {
-                    obj[iterator] = false;
-                }
-            }
-            setAllAside(obj);
+          obj[iterator] = false;
         }
-    }, [])
+      }
+      setAllAside(obj);
+    }
+  }, []);
 
+  const [aepsOpen, setAepsOpen] = useState(false);
 
-    const [aepsOpen, setAepsOpen] = useState(false);
+  const handleaepsopen = (e) => {
+    e.preventDefault();
+    setAepsOpen(!aepsOpen);
+  };
+  const storedUserType = localStorage.getItem("userType");
 
-    const handleaepsopen = (e) => {
-        e.preventDefault();
-        setAepsOpen(!aepsOpen);
-    };
-    const storedUserType = localStorage.getItem('userType');
+  console.log(isOpen);
 
-    console.log(isOpen);
-
-
-    return (
-        <>
-            <aside className={`SidebarMain mCustomScrollbar _mCS_1 mCS-autoHide sidebar ${isOpen ? "collapseddd" : ""}`} id="aside" >
-                {/* <aside className={`SidebarMain mCustomScrollbar _mCS_1 mCS-autoHide sidebar ${isActive ? 'hide-sidebar' : ''}`} id="aside" > */}
-
-                {/* className="mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside" */}
-                <div id="mCSB_1" className="mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside" style={{ maxHeight: 'none' }} tabIndex={0}><div id="mCSB_1_container" className="mCSB_container" style={{ position: 'relative', top: 0, left: 0 }} dir="ltr">
-                    {/* <div className="MenuItem">
+  return (
+    <>
+      <aside
+        className={`SidebarMain mCustomScrollbar _mCS_1 mCS-autoHide sidebar ${
+          isOpen ? "collapseddd" : ""
+        }`}
+        id="aside"
+      >
+        {/* <aside className={`SidebarMain mCustomScrollbar _mCS_1 mCS-autoHide sidebar ${isActive ? 'hide-sidebar' : ''}`} id="aside" > */}
+        {/* className="mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside" */}
+        <div
+          id="mCSB_1"
+          className="mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside"
+          style={{ maxHeight: "none" }}
+          tabIndex={0}
+        >
+          <div
+            id="mCSB_1_container"
+            className="mCSB_container"
+            style={{ position: "relative", top: 0, left: 0 }}
+            dir="ltr"
+          >
+            {/* <div className="MenuItem">
                         <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
                             <NavLink to="/Dashboard">
                                 <i>
@@ -291,8 +311,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </NavLink>
                         </div>
                     </div> */}
-
-                    {/* <div className="MenuItem">
+            {/* <div className="MenuItem">
                         <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
                             <NavLink to="/home/playNif50">
                                 <i>
@@ -304,23 +323,24 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </NavLink>
                         </div>
                     </div> */}
-
-                    <div className="MenuItem">
-                        <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
-                            <NavLink to="dashboard">
-                                <i>
-                                    <svg x={0} y={0} viewBox="0 0 17 17">
-                                        <path d="M9.444,17.000 L9.444,7.555 L17.000,7.555 L17.000,17.000 L9.444,17.000 ZM9.444,-0.000 L17.000,-0.000 L17.000,5.667 L9.444,5.667 L9.444,-0.000 ZM-0.000,11.333 L7.555,11.333 L7.555,17.000 L-0.000,17.000 L-0.000,11.333 ZM-0.000,-0.000 L7.555,-0.000 L7.555,9.444 L-0.000,9.444 L-0.000,-0.000 Z" />
-                                    </svg>
-                                </i>
-                                <span>Dashboard</span>
-                            </NavLink>
-                        </div>
-
-                    </div>
-
-
-                    {/* <div className="MenuItem">
+            <div className="MenuItem">
+              <div
+                className="card-header card-header-header"
+                onClick={(e) => {
+                  changAllAside(e);
+                }}
+              >
+                <NavLink to="dashboard">
+                  <i>
+                    <svg x={0} y={0} viewBox="0 0 17 17">
+                      <path d="M9.444,17.000 L9.444,7.555 L17.000,7.555 L17.000,17.000 L9.444,17.000 ZM9.444,-0.000 L17.000,-0.000 L17.000,5.667 L9.444,5.667 L9.444,-0.000 ZM-0.000,11.333 L7.555,11.333 L7.555,17.000 L-0.000,17.000 L-0.000,11.333 ZM-0.000,-0.000 L7.555,-0.000 L7.555,9.444 L-0.000,9.444 L-0.000,-0.000 Z" />
+                    </svg>
+                  </i>
+                  <span>Dashboard</span>
+                </NavLink>
+              </div>
+            </div>
+            {/* <div className="MenuItem">
                         <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
                             <NavLink to="all-contest-list/All">
                                 <i>
@@ -333,7 +353,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                         </div>
 
                     </div> */}
-                    {/* <div className="MenuItem">
+            {/* <div className="MenuItem">
                         <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
                             <NavLink to="my-win-contest-list/Win">
                                 <i>
@@ -346,7 +366,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                         </div>
 
                     </div> */}
-                    {/* <div className="MenuItem">
+            {/* <div className="MenuItem">
                         <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
                             <NavLink to="upcomming-Contests-List/Upcomming">
                                 <i>
@@ -359,7 +379,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                         </div>
 
                     </div> */}
-                    {/* <div className="MenuItem">
+            {/* <div className="MenuItem">
                         <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
                             <NavLink to="live-Contests-List/Live">
                                 <i>
@@ -371,28 +391,33 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </NavLink>
                         </div>
                     </div> */}
-
-                    <div className="MenuItem">
-                        <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
-                            <NavLink to="my-referred-member">
-                                <FaBlog style={{ marginRight: '10px' }} />
-                                <span>My Referred  Members</span>
-                            </NavLink>
-                        </div>
-                    </div>
-
-                    <div className="MenuItem">
-                        <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
-                            <NavLink to="blog">
-                                <FaBlog style={{ marginRight: '10px' }} />
-                                <span>Blog</span>
-                            </NavLink>
-                        </div>
-                    </div>
-
-
-
-                    {/* <div className="MenuItem ">
+            <div className="MenuItem">
+              <div
+                className="card-header card-header-header"
+                onClick={(e) => {
+                  changAllAside(e);
+                }}
+              >
+                <NavLink to="my-referred-member">
+                  <FaBlog style={{ marginRight: "10px" }} />
+                  <span>My Referred Members</span>
+                </NavLink>
+              </div>
+            </div>
+            <div className="MenuItem">
+              <div
+                className="card-header card-header-header"
+                onClick={(e) => {
+                  changAllAside(e);
+                }}
+              >
+                <NavLink to="blog">
+                  <FaBlog style={{ marginRight: "10px" }} />
+                  <span>Blog</span>
+                </NavLink>
+              </div>
+            </div>
+            {/* <div className="MenuItem ">
                         <div className="card-header collapsed headingSettings-2" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
                             <Link href="#" onClick={() => { changeOpen(!allAside.flight1, "flight1"); }}>
                                 <MdOutlineDisplaySettings />
@@ -430,7 +455,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </ul>
                         </div>
                     </div> */}
-                    {/* <div className="MenuItem ">
+            {/* <div className="MenuItem ">
                         <div className="card-header collapsed headingSettings-2" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
                             <Link href="#" onClick={() => { changeOpen(!allAside.viaggoHotel, "viaggoHotel"); }}>
                                 <MdOutlineDisplaySettings />
@@ -468,10 +493,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </ul>
                         </div>
                     </div> */}
-
-
-
-                    {/* <div className="MenuItem ">
+            {/* <div className="MenuItem ">
                         <div className="card-header collapsed headingSettings-2" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
                             <Link href="#" onClick={() => { changeOpen(!allAside.bus1, "bus1"); }}>
                                 <MdOutlineDisplaySettings />
@@ -509,7 +531,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </ul>
                         </div>
                     </div> */}
-                    {/* <div className="MenuItem ">
+            {/* <div className="MenuItem ">
                         <div className="card-header collapsed headingSettings-2" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
                             <Link href="#" onClick={() => { changeOpen(!allAside.viaggoVisa, "viaggoVisa"); }}>
                                 <MdOutlineDisplaySettings />
@@ -545,8 +567,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </ul>
                         </div>
                     </div> */}
-
-                    {/* <div className="MenuItem ">
+            {/* <div className="MenuItem ">
                         <div className="card-header collapsed headingSettings-2" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
                             <Link href="#" onClick={() => { changeOpen(!allAside.Holidays1, "Holidays1"); }}>
                                 <MdOutlineDisplaySettings />
@@ -579,7 +600,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </ul>
                         </div>
                     </div> */}
-                    {/* <div className="MenuItem ">
+            {/* <div className="MenuItem ">
                         <div className="card-header collapsed headingSettings-2" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
                             <Link href="#" onClick={() => { changeOpen(!allAside.Cruise1, "Cruise1"); }}>
                                 <MdOutlineDisplaySettings />
@@ -612,8 +633,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </ul>
                         </div>
                     </div> */}
-
-                    {/* <div className="MenuItem ">
+            {/* <div className="MenuItem ">
                         <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
                             <Link href="#" onClick={() => { changeOpen(!allAside.Accounts1, "Accounts1"); }}>
                                 <i>
@@ -675,8 +695,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </ul>
                         </div>
                     </div> */}
-
-                    {/* <div className="MenuItem">
+            {/* <div className="MenuItem">
                         <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
                             <NavLink to="payment-processing">
                                 <i>
@@ -689,8 +708,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                         </div>
 
                     </div> */}
-
-                    {/* <div className="MenuItem ">
+            {/* <div className="MenuItem ">
                         <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
                             <Link href="#" onClick={() => { changeOpen(!allAside.GoatAllReport1, "GoatAllReport1"); }}>
                                 <i>
@@ -727,8 +745,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </ul>
                         </div>
                     </div> */}
-
-                    {/* <div className="MenuItem ">
+            {/* <div className="MenuItem ">
                             <div className="card-header card-header-header" onClick={(e) => { changAllAside(e) }}>
                                 <NavLink to="money-transfer">
                                     <i>
@@ -774,9 +791,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                                 </NavLink>
                             </div>
                         </div> */}
-
-
-                    {/* {storedUserType === 'Super Distributor' || storedUserType === 'Distributor' ? (
+            {/* {storedUserType === 'Super Distributor' || storedUserType === 'Distributor' ? (
                         <></>
                     ) : (
                         <>
@@ -818,8 +833,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </div>
                         </>
                     )} */}
-
-                    {/* {storedUserType === 'Super Distributor' || storedUserType === 'Distributor' ? (
+            {/* {storedUserType === 'Super Distributor' || storedUserType === 'Distributor' ? (
 
                         <div className="MenuItem ">
                             <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
@@ -851,7 +865,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                         <>
                         </>
                     )} */}
-                    {/* <div className="MenuItem">
+            {/* <div className="MenuItem">
                         <div className="card-header collapsed" id="headingLoan" data-toggle="collapse" data-target="#collapseLoan" aria-expanded="false" aria-controls="collapseLoan">
                             <Link href="#" onClick={() => { changeOpen(!allAside.loan, "loan"); }}>
                                 <FaMoneyCheckAlt style={{ width: '16px', height: '22px', marginRight: '10px' }} />
@@ -871,8 +885,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </ul>
                         </div>
                     </div> */}
-
-                    {/* <div className="MenuItem ">
+            {/* <div className="MenuItem ">
                         <div className="card-header">
                             <Link to="aeps-payout-account">
                                 <i>
@@ -884,49 +897,71 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </Link>
                         </div>
                     </div> */}
-                    {storedUserType === 'Super Distributor' || storedUserType === 'Distributor' ? (
-                        <></>
-                    ) : (
-                        <>
-                            <div className="MenuItem ">
-                                <div className="card-header collapsed" id="headingOne" >
-                                    <Link to="#" onClick={() => { changeOpen(!allAside.report, "report"); }}>
-                                        <i>
-                                            <svg x={0} y={0} viewBox="0 0 512 512">
-                                                <path d="M 77.109375 401.664062 L 55.164062 401.664062 C 24.746094 401.664062 0 426.414062 0 456.832031 L 0 497 C 0 505.285156 6.714844 512 15 512 L 79.691406 512 C 78.023438 507.304688 77.109375 502.257812 77.109375 497 Z M 77.109375 401.664062 M 184.21875 321.332031 L 162.277344 321.332031 C 131.859375 321.332031 107.109375 346.082031 107.109375 376.5 L 107.109375 497 C 107.109375 505.285156 113.824219 512 122.109375 512 L 186.800781 512 C 185.136719 507.304688 184.21875 502.257812 184.21875 497 Z M 184.21875 321.332031 M 509.054688 150.671875 L 401.941406 6.070312 C 399.109375 2.253906 394.640625 0 389.886719 0 C 385.132812 0 380.660156 2.253906 377.832031 6.070312 L 270.722656 150.671875 C 267.351562 155.222656 266.832031 161.289062 269.378906 166.347656 C 271.929688 171.40625 277.109375 174.601562 282.777344 174.601562 L 321.332031 174.601562 L 321.332031 497 C 321.332031 505.285156 328.046875 512 336.332031 512 L 443.441406 512 C 451.726562 512 458.441406 505.285156 458.441406 497 L 458.441406 174.601562 L 497 174.601562 C 502.664062 174.601562 507.847656 171.40625 510.394531 166.347656 C 512.945312 161.289062 512.425781 155.222656 509.054688 150.671875 Z M 509.054688 150.671875 M 291.332031 241 L 269.386719 241 C 238.96875 241 214.21875 265.746094 214.21875 296.164062 L 214.21875 497 C 214.21875 505.285156 220.9375 512 229.21875 512 L 293.910156 512 C 292.246094 507.304688 291.332031 502.257812 291.332031 497 Z M 291.332031 241" />
-                                            </svg>
-                                        </i>
-                                        <span>Report</span>
-                                        <i className="ic">
-                                            <svg x={0} y={0} viewBox="0 0 7 11">
-                                                <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                            </svg>
-                                        </i>
-                                    </Link>
-                                </div>
-                                <div id="collapseOne" className={`SubmenuItems collapse ${allAside.report ? "mm-show" : "extra"}`} >
-                                    <ul>
-                                        <li onClick={handleMenuClick}>
-                                            <NavLink to="wallet-report">Wallet Ledger Report</NavLink>
-                                        </li>
-                                        <li onClick={handleMenuClick}>
-                                            <NavLink to="contest-payment-report">Contest Pyment Report</NavLink>
-                                        </li>
-                                        <li onClick={handleMenuClick}>
-                                            <NavLink to="referralcommissions">Referral Commissions</NavLink>
-                                        </li>
-                                        <li onClick={handleMenuClick}>
-                                            <NavLink to="binarycommission">Binary Commission</NavLink>
-                                        </li>
-                                        <li onClick={handleMenuClick}>
-                                            <NavLink to="transactions">Transactions</NavLink>
-                                        </li>
-                                        <li onClick={handleMenuClick}>
-                                            <NavLink to="investment">Investment</NavLink>
-                                        </li>
+            {storedUserType === "Super Distributor" ||
+            storedUserType === "Distributor" ? (
+              <></>
+            ) : (
+              <>
+                <div className="MenuItem ">
+                  <div className="card-header collapsed" id="headingOne">
+                    <Link
+                      to="#"
+                      onClick={() => {
+                        changeOpen(!allAside.report, "report");
+                      }}
+                    >
+                      <i>
+                        <svg x={0} y={0} viewBox="0 0 512 512">
+                          <path d="M 77.109375 401.664062 L 55.164062 401.664062 C 24.746094 401.664062 0 426.414062 0 456.832031 L 0 497 C 0 505.285156 6.714844 512 15 512 L 79.691406 512 C 78.023438 507.304688 77.109375 502.257812 77.109375 497 Z M 77.109375 401.664062 M 184.21875 321.332031 L 162.277344 321.332031 C 131.859375 321.332031 107.109375 346.082031 107.109375 376.5 L 107.109375 497 C 107.109375 505.285156 113.824219 512 122.109375 512 L 186.800781 512 C 185.136719 507.304688 184.21875 502.257812 184.21875 497 Z M 184.21875 321.332031 M 509.054688 150.671875 L 401.941406 6.070312 C 399.109375 2.253906 394.640625 0 389.886719 0 C 385.132812 0 380.660156 2.253906 377.832031 6.070312 L 270.722656 150.671875 C 267.351562 155.222656 266.832031 161.289062 269.378906 166.347656 C 271.929688 171.40625 277.109375 174.601562 282.777344 174.601562 L 321.332031 174.601562 L 321.332031 497 C 321.332031 505.285156 328.046875 512 336.332031 512 L 443.441406 512 C 451.726562 512 458.441406 505.285156 458.441406 497 L 458.441406 174.601562 L 497 174.601562 C 502.664062 174.601562 507.847656 171.40625 510.394531 166.347656 C 512.945312 161.289062 512.425781 155.222656 509.054688 150.671875 Z M 509.054688 150.671875 M 291.332031 241 L 269.386719 241 C 238.96875 241 214.21875 265.746094 214.21875 296.164062 L 214.21875 497 C 214.21875 505.285156 220.9375 512 229.21875 512 L 293.910156 512 C 292.246094 507.304688 291.332031 502.257812 291.332031 497 Z M 291.332031 241" />
+                        </svg>
+                      </i>
+                      <span>Report</span>
+                      <i className="ic">
+                        <svg x={0} y={0} viewBox="0 0 7 11">
+                          <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                        </svg>
+                      </i>
+                    </Link>
+                  </div>
+                  <div
+                    id="collapseOne"
+                    className={`SubmenuItems collapse ${
+                      allAside.report ? "mm-show" : "extra"
+                    }`}
+                  >
+                    <ul>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="wallet-report">
+                          Wallet Ledger Report
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="contest-payment-report">
+                          Contest Pyment Report
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="referralcommissions">
+                          Referral Commissions
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="binarycommission">
+                          Binary Commission
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="transactions">Transactions</NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="investment">Investment</NavLink>
+                      </li>
 
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="OrderList">Order History</NavLink>
+                      </li>
 
-                                        {/* {storedUserType === 'Super Distributor' || storedUserType === 'Distributor' ? (
+                      {/* {storedUserType === 'Super Distributor' || storedUserType === 'Distributor' ? (
                                             <></>
                                         ) : (
                                             <>
@@ -937,10 +972,8 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
 
                                         )} */}
 
-
-
-                                        {/* ------ */}
-                                        {/* <li onClick={handleMenuClick}>
+                      {/* ------ */}
+                      {/* <li onClick={handleMenuClick}>
                                             <NavLink to="dmt_report_search">DMT Report</NavLink>
                                         </li>
 
@@ -960,137 +993,232 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                                         <li onClick={handleMenuClick}>
                                             <NavLink to="Aeps_report">AEPS Payout Report</NavLink>
                                         </li> */}
+                    </ul>
+                  </div>
+                </div>
+                <div className="MenuItem ">
+                  <div
+                    className="card-header collapsed"
+                    id="headingSettings"
+                    data-toggle="collapse"
+                    data-target="#collapseSettings"
+                    aria-expanded="false"
+                    aria-controls="collapseSettings"
+                  >
+                    <Link
+                      href="#"
+                      onClick={() => {
+                        changeOpen(!allAside.payoutReport, "payoutReport");
+                      }}
+                    >
+                      <i>
+                        <svg
+                          x={0}
+                          y={0}
+                          viewBox="0 0 16 16"
+                          className="sm-svg default-svg"
+                        >
+                          <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
+                        </svg>
+                      </i>
 
+                      <span>Payout Report</span>
+                      <i className="ic">
+                        <svg x={0} y={0} viewBox="0 0 7 11">
+                          <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                        </svg>
+                      </i>
+                    </Link>
+                  </div>
+                  <div
+                    id="collapseSettings"
+                    className={`SubmenuItems collapse ${
+                      allAside.payoutReport ? "mm-show" : "extra"
+                    }`}
+                    aria-labelledby="headingSettings"
+                    data-parent="#accordion"
+                  >
+                    <ul>
+                      {/* <li onClick={handleMenuClick}>
+                                    <Link to="shipping_Address">Shipping Address</Link>
+                                </li> */}
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="PayoutST">Payout Statement</NavLink>
+                      </li>
 
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="transfer-fund-AIBOT-Gift">
+                          Account Statement
+                        </NavLink>
+                      </li>
+                    </ul>
+                  </div>
+                </div>{" "}
+              </>
+            )}
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.payment, "payment");
+                  }}
+                >
+                  {/* <img src={paymentIcon} alt="" style={{ width: '16px', height: '22px', marginRight: '10px' }} /> */}
+                  <MdOutlinePayment style={{ marginRight: "10px" }} />
+                  <span>Payments</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.payment ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="company-bank-details">
+                      Company Bank Details
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="add-payment-request">
+                      Add Payment Request
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="payment-request-to-company">
+                      Payment request to company{" "}
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="payment-getway">Payment Gateway</NavLink>
+                  </li>
 
-
-
-
-
-
-
-                                    </ul>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.payment, "payment"); }}>
-                                {/* <img src={paymentIcon} alt="" style={{ width: '16px', height: '22px', marginRight: '10px' }} /> */}
-                                <MdOutlinePayment style={{ marginRight: '10px' }} />
-                                <span>Payments</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.payment ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="company-bank-details">Company Bank Details</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="add-payment-request">Add Payment Request</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="payment-request-to-company">Payment request to company </NavLink>
-                                </li >
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="payment-getway">Payment Gateway</NavLink>
-                                </li>
-
-                                {/* {distributer && <><li onClick={handleMenuClick}>
+                  {/* {distributer && <><li onClick={handleMenuClick}>
                                     <NavLink to="payment-request-by-member">Payment Requested By Member</NavLink>
                                 </li>
                                 </>} */}
 
-
-                                {retailer &&
-                                    <>
-                                        {/* <li onClick={handleMenuClick}>
+                  {retailer && (
+                    <>
+                      {/* <li onClick={handleMenuClick}>
                                             <NavLink to="payment-request-by-member">Payment Requested By Member</NavLink>
                                         </li> */}
 
-                                        <li onClick={handleMenuClick}>
-                                            <NavLink to="company-bank-details">Company Bank Details</NavLink>
-                                        </li>
-                                        <li onClick={handleMenuClick}>
-                                            <NavLink to="add-payment-request">Add Payment Request</NavLink>
-                                        </li>
-                                        <li onClick={handleMenuClick}>
-                                            <NavLink to="payment-request-to-company">Payment request to company </NavLink>
-                                        </li >
-                                        <li onClick={handleMenuClick}>
-                                            <NavLink to="payment-request-to-distributor">Payment request to Distributor / Super distributor history</NavLink>
-                                        </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="company-bank-details">
+                          Company Bank Details
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="add-payment-request">
+                          Add Payment Request
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="payment-request-to-company">
+                          Payment request to company{" "}
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="payment-request-to-distributor">
+                          Payment request to Distributor / Super distributor
+                          history
+                        </NavLink>
+                      </li>
+                    </>
+                  )}
+                  {distributer && (
+                    <>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="company-bank-details">
+                          Company Bank Details
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="add-payment-request">
+                          Add Payment Request
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="payment-request-to-company">
+                          Withdrowl request to company{" "}
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="payment-request-to-distributor">
+                          Payment request to Super distributor history
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="payment-request-to-distributor/super-distributor-history">
+                          Payment Requested By Member
+                        </NavLink>
+                      </li>
+                    </>
+                  )}
 
-
-                                    </>}
-                                {distributer && <>
-                                    <li onClick={handleMenuClick}>
-                                        <NavLink to="company-bank-details">Company Bank Details</NavLink>
-                                    </li>
-                                    <li onClick={handleMenuClick}>
-                                        <NavLink to="add-payment-request">Add Payment Request</NavLink>
-                                    </li>
-                                    <li onClick={handleMenuClick}>
-                                        <NavLink to="payment-request-to-company">Withdrowl request to company </NavLink>
-                                    </li >
-                                    <li onClick={handleMenuClick}>
-                                        <NavLink to="payment-request-to-distributor">Payment request to  Super distributor history</NavLink>
-                                    </li>
-                                    <li onClick={handleMenuClick}>
-                                        <NavLink to="payment-request-to-distributor/super-distributor-history">Payment Requested By Member</NavLink>
-                                    </li>
-                                </>}
-
-
-                                {superdistributer && <>
-                                    {/* <li onClick={handleMenuClick}>
+                  {superdistributer && (
+                    <>
+                      {/* <li onClick={handleMenuClick}>
                                         <NavLink to="payment-request-to-distributor">Payment request to Distributor / Super distributor history</NavLink>
                                     </li> */}
-                                    <li onClick={handleMenuClick}>
-                                        <NavLink to="company-bank-details">Company Bank Details</NavLink>
-                                    </li>
-                                    <li onClick={handleMenuClick}>
-                                        <NavLink to="add-payment-request">Add Payment Request</NavLink>
-                                    </li>
-                                    <li onClick={handleMenuClick}>
-                                        <NavLink to="payment-request-to-company">Payment request to company </NavLink>
-                                    </li >
-                                    <li onClick={handleMenuClick}>
-                                        <NavLink to="payment-request-to-distributor/super-distributor-history">Payment Requested By Member</NavLink>
-                                    </li>
-                                </>}
-                                {storedUserType === 'Super Distributor' || storedUserType === 'Distributor' ? (
-                                    <></>
-                                ) : (
-                                    <>
-
-                                        {/* <li onClick={handleMenuClick}>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="company-bank-details">
+                          Company Bank Details
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="add-payment-request">
+                          Add Payment Request
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="payment-request-to-company">
+                          Payment request to company{" "}
+                        </NavLink>
+                      </li>
+                      <li onClick={handleMenuClick}>
+                        <NavLink to="payment-request-to-distributor/super-distributor-history">
+                          Payment Requested By Member
+                        </NavLink>
+                      </li>
+                    </>
+                  )}
+                  {storedUserType === "Super Distributor" ||
+                  storedUserType === "Distributor" ? (
+                    <></>
+                  ) : (
+                    <>
+                      {/* <li onClick={handleMenuClick}>
                                             <NavLink to="aeps-wallet-transfer">AEPS Wallet Transfer</NavLink>
                                         </li> */}
-                                    </>
-                                )}
-
-                            </ul>
-                        </div>
-                    </div>
-
-
-
-
-
-
-
-                    {storedUserType === 'Super Distributor' || storedUserType === 'Distributor' ? (
-                        <></>
-                    ) : (
-                        <>
-                            {/* <div className="MenuItem ">
+                    </>
+                  )}
+                </ul>
+              </div>
+            </div>
+            {storedUserType === "Super Distributor" ||
+            storedUserType === "Distributor" ? (
+              <></>
+            ) : (
+              <>
+                {/* <div className="MenuItem ">
                                 <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
                                     <Link href="#" onClick={() => { changeOpen(!allAside.package, "package"); }}>
                                         
@@ -1115,9 +1243,9 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                                     </ul>
                                 </div>
                             </div> */}
-                        </>
-                    )}
-                    {/* {storedUserType === 'Super Distributor' || storedUserType === 'Distributor' ? (
+              </>
+            )}
+            {/* {storedUserType === 'Super Distributor' || storedUserType === 'Distributor' ? (
                         <></>
                     ) : (
                         <>
@@ -1135,123 +1263,193 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </div>
                         </>
                     )} */}
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed headingSettings-2"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.Withdraw, "Withdraw");
+                  }}
+                >
+                  <MdOutlineDisplaySettings />
+                  <span>Withdraw</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.Withdraw ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="add-withdraw-request">
+                      Add Withdraw Request
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="pending-list-withdraw-request/Pending">
+                      Pending Withdrawals
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="approved-list-withdraw-request/Approved">
+                      Approved Withdrawals
+                    </NavLink>
+                  </li>
 
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed headingSettings-2" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.Withdraw, "Withdraw"); }}>
-                                <MdOutlineDisplaySettings />
-                                <span>Withdraw</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.Withdraw ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="add-withdraw-request">Add Withdraw Request</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="pending-list-withdraw-request/Pending">Pending Withdrawals</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="approved-list-withdraw-request/Approved">Approved Withdrawals</NavLink>
-                                </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="rejected-list-withdraw-request/Rejected">
+                      Rejected Withdrawals
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="all-list-withdraw-request/All">
+                      All Withdrawals
+                    </NavLink>
+                  </li>
 
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="rejected-list-withdraw-request/Rejected">Rejected Withdrawals</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="all-list-withdraw-request/All">All Withdrawals</NavLink>
-                                </li>
-
-
-                                {/* <li onClick={handleMenuClick}>
+                  {/* <li onClick={handleMenuClick}>
                                     <NavLink to="clossing-Dispute">Closed Tickets</NavLink>
                                 </li> */}
-                            </ul>
-                        </div>
-                    </div>
+                </ul>
+              </div>
+            </div>
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed headingSettings-2"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.manageEpin, "manageEpin");
+                  }}
+                >
+                  <MdOutlineDisplaySettings />
+                  <span>Manage E-pin</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.manageEpin ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="add-withdraw-request">Request E-pin </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="pending-list-withdraw-request/Pending">
+                      Available E-pin{" "}
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="approved-list-withdraw-request/Approved">
+                      Used E-pin{" "}
+                    </NavLink>
+                  </li>
 
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="rejected-list-withdraw-request/Rejected">
+                      Transfer E-pin
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="all-list-withdraw-request/All">
+                      E-pin Transfer Report
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="all-list-withdraw-request/All">
+                      E-pin Received Report
+                    </NavLink>
+                  </li>
 
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed headingSettings-2" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.manageEpin, "manageEpin"); }}>
-                                <MdOutlineDisplaySettings />
-                                <span>Manage E-pin</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.manageEpin ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="add-withdraw-request">Request E-pin </NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="pending-list-withdraw-request/Pending">Available E-pin </NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="approved-list-withdraw-request/Approved">Used E-pin </NavLink>
-                                </li>
-
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="rejected-list-withdraw-request/Rejected">Transfer E-pin</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="all-list-withdraw-request/All">E-pin Transfer Report</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="all-list-withdraw-request/All">E-pin Received Report</NavLink>
-                                </li>
-
-
-                                {/* <li onClick={handleMenuClick}>
+                  {/* <li onClick={handleMenuClick}>
                                     <NavLink to="clossing-Dispute">Closed Tickets</NavLink>
                                 </li> */}
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed headingSettings-2" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.disput, "disput"); }}>
-                                <MdOutlineDisplaySettings />
-                                <span>Help & Support</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.disput ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="add-ticket">Add Ticket</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="list-tickets">List Tickets</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="open-dispute">Pending Tickets</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="how-to-play">How to Play</NavLink>
-                                </li>
-                                {/* <li onClick={handleMenuClick}>
+                </ul>
+              </div>
+            </div>
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed headingSettings-2"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.disput, "disput");
+                  }}
+                >
+                  <MdOutlineDisplaySettings />
+                  <span>Help & Support</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.disput ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="add-ticket">Add Ticket</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="list-tickets">List Tickets</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="open-dispute">Pending Tickets</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="how-to-play">How to Play</NavLink>
+                  </li>
+                  {/* <li onClick={handleMenuClick}>
                                     <NavLink to="clossing-Dispute">Closed Tickets</NavLink>
                                 </li> */}
-                            </ul>
-                        </div>
-                    </div>
-
-                    {/* <div className="MenuItem ">
+                </ul>
+              </div>
+            </div>
+            {/* <div className="MenuItem ">
                         <div className="card-header">
                             <Link to="complain-list">
                                 <i>
@@ -1263,38 +1461,68 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </Link>
                         </div>
                     </div> */}
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.transfer, "transfer"); }}>
-                                <i>
-                                    <svg x={0} y={0} viewBox="0 0 16 16" className="sm-svg default-svg">
-                                        <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
-                                    </svg>
-                                </i>
-                                <span>Transfer</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.transfer ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                {/* <li onClick={handleMenuClick}>
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.transfer, "transfer");
+                  }}
+                >
+                  <i>
+                    <svg
+                      x={0}
+                      y={0}
+                      viewBox="0 0 16 16"
+                      className="sm-svg default-svg"
+                    >
+                      <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
+                    </svg>
+                  </i>
+                  <span>Transfer</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.transfer ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  {/* <li onClick={handleMenuClick}>
                                     <Link to="shipping_Address">Shipping Address</Link>
                                 </li> */}
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="transfer-fund">Transfer to Package Wallet</NavLink>
-                                </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="transfer-fund">
+                      Transfer to Package Wallet
+                    </NavLink>
+                  </li>
 
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="transfer-fund-AIBOT-Gift">Transfer AIBOT Gift New</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="transfer-fund-AIBOT-redeemable">Transfer to AIBOT Package Wallet</NavLink>
-                                </li>
-                                {/* <li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="transfer-fund-AIBOT-Gift">
+                      Transfer AIBOT Gift New
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="transfer-fund-AIBOT-redeemable">
+                      Transfer to AIBOT Package Wallet
+                    </NavLink>
+                  </li>
+                  {/* <li>
                                     <Link to="Retailer_authentication">OTP Security</Link>
                                 </li> */}
                             </ul>
@@ -1377,380 +1605,647 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                                 {/* <li onClick={handleMenuClick}>
                                     <Link to="shipping_Address">Shipping Address</Link>
                                 </li> */}
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/compounding-income">Compounding Income</NavLink>
-                                </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/compounding-income">
+                      Compounding Income
+                    </NavLink>
+                  </li>
 
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/achivement-income">Achivement Income</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/ib-income">IB Income</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="trading-level-income">Trading Level Income</NavLink>
-                                </li><li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/trading-income">Trading Income</NavLink>
-                                </li><li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/reward-income">Reward Income</NavLink>
-                                </li><li onClick={handleMenuClick}>
-                                    <NavLink to="direct-TLC-profit">Gift Direct TLC Profit</NavLink>
-                                </li><li onClick={handleMenuClick}>
-                                    <NavLink to="Compounding-profit-income">Compounding Profit Income</NavLink>
-                                </li><li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/level-income">Level Income</NavLink>
-                                </li><li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/matching-income">Matching Income</NavLink>
-                                </li><li onClick={handleMenuClick}>
-                                    <NavLink to="TLC-profit">TLC-profit</NavLink>
-                                </li><li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/club-income">Club Income</NavLink>
-                                </li>
-                                {/* <li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/achivement-income">
+                      Achivement Income
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/ib-income">IB Income</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="trading-level-income">
+                      Trading Level Income
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/trading-income">Trading Income</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/reward-income">Reward Income</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="direct-TLC-profit">
+                      Gift Direct TLC Profit
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="Compounding-profit-income">
+                      Compounding Profit Income
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/level-income">Level Income</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/matching-income">
+                      Matching Income
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="TLC-profit">TLC-profit</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/club-income">Club Income</NavLink>
+                  </li>
+                  {/* <li>
                                     <Link to="Retailer_authentication">OTP Security</Link>
                                 </li> */}
-                            </ul>
-                        </div>
-                    </div>
-
-
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.network, "network"); }}>
-                                <i>
-                                    <svg x={0} y={0} viewBox="0 0 16 16" className="sm-svg default-svg">
-                                        <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
-                                    </svg>
-                                </i>
-                                <span>Network</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.network ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                {/* <li onClick={handleMenuClick}>
+                </ul>
+              </div>
+            </div>
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.network, "network");
+                  }}
+                >
+                  <i>
+                    <svg
+                      x={0}
+                      y={0}
+                      viewBox="0 0 16 16"
+                      className="sm-svg default-svg"
+                    >
+                      <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
+                    </svg>
+                  </i>
+                  <span>Network</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.network ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  {/* <li onClick={handleMenuClick}>
                                     <Link to="shipping_Address">Shipping Address</Link>
                                 </li> */}
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="unilevel">Unilevel</NavLink>
-                                </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="unilevel">Unilevel</NavLink>
+                  </li>
 
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="direct-team">Direct Team</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="business-histroy">Business History</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="all-team">All Team</NavLink>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.deposit, "deposit"); }}>
-                                <i>
-                                    <svg x={0} y={0} viewBox="0 0 16 16" className="sm-svg default-svg">
-                                        <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
-                                    </svg>
-                                </i>
-                                <span>Deposit</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.deposit ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                {/* <li onClick={handleMenuClick}>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="direct-team">Direct Team</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="business-histroy">Business History</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="all-team">All Team</NavLink>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.deposit, "deposit");
+                  }}
+                >
+                  <i>
+                    <svg
+                      x={0}
+                      y={0}
+                      viewBox="0 0 16 16"
+                      className="sm-svg default-svg"
+                    >
+                      <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
+                    </svg>
+                  </i>
+                  <span>Deposit</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.deposit ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  {/* <li onClick={handleMenuClick}>
                                     <Link to="shipping_Address">Shipping Address</Link>
                                 </li> */}
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="deposit">Deposit via Gateway</NavLink>
-                                </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="deposit">Deposit via Gateway</NavLink>
+                  </li>
 
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="invoices">Deposit Invoices</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="invoices-INR">Deposit Invoices (INR)</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="deposit-INR">Deposit INR (Package)</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="deposit-INR-Staking">Deposit INR (Staking)</NavLink>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.robot, "robot"); }}>
-                                <i>
-                                    <svg x={0} y={0} viewBox="0 0 16 16" className="sm-svg default-svg">
-                                        <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
-                                    </svg>
-                                </i>
-                                <span>Robot</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.robot ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                {/* <li onClick={handleMenuClick}>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="invoices">Deposit Invoices</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="invoices-INR">Deposit Invoices (INR)</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="deposit-INR">Deposit INR (Package)</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="deposit-INR-Staking">
+                      Deposit INR (Staking)
+                    </NavLink>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.robot, "robot");
+                  }}
+                >
+                  <i>
+                    <svg
+                      x={0}
+                      y={0}
+                      viewBox="0 0 16 16"
+                      className="sm-svg default-svg"
+                    >
+                      <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
+                    </svg>
+                  </i>
+                  <span>Robot</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.robot ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  {/* <li onClick={handleMenuClick}>
                                     <Link to="shipping_Address">Shipping Address</Link>
                                 </li> */}
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/renewal-trading-reports">Renewal Robot</NavLink>
-                                </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/renewal-trading-reports">
+                      Renewal Robot
+                    </NavLink>
+                  </li>
 
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/investment-robot-reports">Investment Robot</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/trading-robot-reports">Trading Robot</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/portfolio">Portfolio</NavLink>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.buySell, "buySell"); }}>
-                                <i>
-                                    <svg x={0} y={0} viewBox="0 0 16 16" className="sm-svg default-svg">
-                                        <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
-                                    </svg>
-                                </i>
-                                <span>Buy/Sell</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.buySell ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                {/* <li onClick={handleMenuClick}>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/investment-robot-reports">
+                      Investment Robot
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/trading-robot-reports">
+                      Trading Robot
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/portfolio">Portfolio</NavLink>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.buySell, "buySell");
+                  }}
+                >
+                  <i>
+                    <svg
+                      x={0}
+                      y={0}
+                      viewBox="0 0 16 16"
+                      className="sm-svg default-svg"
+                    >
+                      <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
+                    </svg>
+                  </i>
+                  <span>Buy/Sell</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.buySell ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  {/* <li onClick={handleMenuClick}>
                                     <Link to="shipping_Address">Shipping Address</Link>
                                 </li> */}
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/sell-aibot-reports">Sell AIBOT</NavLink>
-                                </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/sell-aibot-reports">Sell AIBOT</NavLink>
+                  </li>
 
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/buy-sell-reports">Buy Sell Reports</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/buy-aibot">Buy AIBOT</NavLink>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.AIBOT20, "AIBOT20"); }}>
-                                <i>
-                                    <svg x={0} y={0} viewBox="0 0 16 16" className="sm-svg default-svg">
-                                        <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
-                                    </svg>
-                                </i>
-                                <span>AIBOT2.0</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.AIBOT20 ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                {/* <li onClick={handleMenuClick}>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/buy-sell-reports">
+                      Buy Sell Reports
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/buy-aibot">Buy AIBOT</NavLink>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.AIBOT20, "AIBOT20");
+                  }}
+                >
+                  <i>
+                    <svg
+                      x={0}
+                      y={0}
+                      viewBox="0 0 16 16"
+                      className="sm-svg default-svg"
+                    >
+                      <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
+                    </svg>
+                  </i>
+                  <span>AIBOT2.0</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.AIBOT20 ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  {/* <li onClick={handleMenuClick}>
                                     <Link to="shipping_Address">Shipping Address</Link>
                                 </li> */}
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="AIBOT-ICO">AIBOT2.0 ICO</NavLink>
-                                </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="AIBOT-ICO">AIBOT2.0 ICO</NavLink>
+                  </li>
 
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="AIBOT20-ICO-level-income">AIBOT2.0 ICO Level Income</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="AIBOT20-level-income">AIBOT2.0 Level Income</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="AIBOT20-profit">AIBOT2.0 Profit</NavLink>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.financial, "financial"); }}>
-                                <i>
-                                    <svg x={0} y={0} viewBox="0 0 16 16" className="sm-svg default-svg">
-                                        <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
-                                    </svg>
-                                </i>
-                                <span>Financial</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.financial ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                {/* <li onClick={handleMenuClick}>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="AIBOT20-ICO-level-income">
+                      AIBOT2.0 ICO Level Income
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="AIBOT20-level-income">
+                      AIBOT2.0 Level Income
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="AIBOT20-profit">AIBOT2.0 Profit</NavLink>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.financial, "financial");
+                  }}
+                >
+                  <i>
+                    <svg
+                      x={0}
+                      y={0}
+                      viewBox="0 0 16 16"
+                      className="sm-svg default-svg"
+                    >
+                      <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
+                    </svg>
+                  </i>
+                  <span>Financial</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.financial ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  {/* <li onClick={handleMenuClick}>
                                     <Link to="shipping_Address">Shipping Address</Link>
                                 </li> */}
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/account-statements-reports">Account Statement</NavLink>
-                                </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/account-statements-reports">
+                      Account Statement
+                    </NavLink>
+                  </li>
 
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/withdrawal-statements-reports">Withdrawal Reports</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/finance/withdrawal-amount-INR">Withdrawal Amount (INR)</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/withdrawal-trading-wallet">Withdrawal Trading (INR)</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/income-summary-reports">Income Summary</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/wallet-history-reports">Wallet History</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/withdrawal-trading-usdt-reports">Withdrawal Trading (USDT)</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/finance/withdrawal-amount">Withdrawal Amount</NavLink>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.staking, "staking"); }}>
-                                <i>
-                                    <svg x={0} y={0} viewBox="0 0 16 16" className="sm-svg default-svg">
-                                        <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
-                                    </svg>
-                                </i>
-                                <span>Staking</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.staking ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                {/* <li onClick={handleMenuClick}>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/withdrawal-statements-reports">
+                      Withdrawal Reports
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/finance/withdrawal-amount-INR">
+                      Withdrawal Amount (INR)
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/withdrawal-trading-wallet">
+                      Withdrawal Trading (INR)
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/income-summary-reports">
+                      Income Summary
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/wallet-history-reports">
+                      Wallet History
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/withdrawal-trading-usdt-reports">
+                      Withdrawal Trading (USDT)
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/finance/withdrawal-amount">
+                      Withdrawal Amount
+                    </NavLink>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.staking, "staking");
+                  }}
+                >
+                  <i>
+                    <svg
+                      x={0}
+                      y={0}
+                      viewBox="0 0 16 16"
+                      className="sm-svg default-svg"
+                    >
+                      <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
+                    </svg>
+                  </i>
+                  <span>Staking</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.staking ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  {/* <li onClick={handleMenuClick}>
                                     <Link to="shipping_Address">Shipping Address</Link>
                                 </li> */}
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/staking-matching-income">Staking Matching Income</NavLink>
-                                </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/staking-matching-income">
+                      Staking Matching Income
+                    </NavLink>
+                  </li>
 
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/staking-tlc-reports">Staking In TLC</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/staking-income-reports">Staking Income</NavLink>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.rewards, "rewards"); }}>
-                                <i>
-                                    <svg x={0} y={0} viewBox="0 0 16 16" className="sm-svg default-svg">
-                                        <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
-                                    </svg>
-                                </i>
-                                <span>Rewards</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.rewards ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                {/* <li onClick={handleMenuClick}>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/staking-tlc-reports">
+                      Staking In TLC
+                    </NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/staking-income-reports">
+                      Staking Income
+                    </NavLink>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.rewards, "rewards");
+                  }}
+                >
+                  <i>
+                    <svg
+                      x={0}
+                      y={0}
+                      viewBox="0 0 16 16"
+                      className="sm-svg default-svg"
+                    >
+                      <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
+                    </svg>
+                  </i>
+                  <span>Rewards</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.rewards ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  {/* <li onClick={handleMenuClick}>
                                     <Link to="shipping_Address">Shipping Address</Link>
                                 </li> */}
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="aibot/rewards-reports">Reward</NavLink>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-
-                    <div className="MenuItem ">
-                        <div className="card-header collapsed" id="headingSettings" data-toggle="collapse" data-target="#collapseSettings" aria-expanded="false" aria-controls="collapseSettings">
-                            <Link href="#" onClick={() => { changeOpen(!allAside.setting, "setting"); }}>
-                                <i>
-                                    <svg x={0} y={0} viewBox="0 0 16 16" className="sm-svg default-svg">
-                                        <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
-                                    </svg>
-                                </i>
-                                <span>Settings</span>
-                                <i className="ic">
-                                    <svg x={0} y={0} viewBox="0 0 7 11">
-                                        <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
-                                    </svg>
-                                </i>
-                            </Link>
-                        </div>
-                        <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.setting ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
-                            <ul>
-                                {/* <li onClick={handleMenuClick}>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="aibot/rewards-reports">Reward</NavLink>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="MenuItem ">
+              <div
+                className="card-header collapsed"
+                id="headingSettings"
+                data-toggle="collapse"
+                data-target="#collapseSettings"
+                aria-expanded="false"
+                aria-controls="collapseSettings"
+              >
+                <Link
+                  href="#"
+                  onClick={() => {
+                    changeOpen(!allAside.setting, "setting");
+                  }}
+                >
+                  <i>
+                    <svg
+                      x={0}
+                      y={0}
+                      viewBox="0 0 16 16"
+                      className="sm-svg default-svg"
+                    >
+                      <path d="M15.920,7.112 C15.895,6.887 15.633,6.718 15.407,6.718 C14.675,6.718 14.026,6.287 13.753,5.621 C13.475,4.940 13.655,4.144 14.200,3.643 C14.372,3.486 14.392,3.223 14.248,3.040 C13.874,2.564 13.448,2.133 12.983,1.760 C12.801,1.614 12.534,1.634 12.377,1.809 C11.901,2.337 11.046,2.534 10.385,2.257 C9.698,1.968 9.264,1.270 9.307,0.521 C9.320,0.285 9.149,0.081 8.915,0.053 C8.318,-0.016 7.716,-0.018 7.118,0.048 C6.887,0.074 6.715,0.274 6.723,0.506 C6.749,1.248 6.310,1.934 5.629,2.213 C4.977,2.480 4.128,2.286 3.653,1.762 C3.496,1.590 3.233,1.569 3.050,1.711 C2.572,2.088 2.136,2.518 1.758,2.991 C1.611,3.175 1.633,3.441 1.806,3.599 C2.362,4.103 2.541,4.905 2.253,5.595 C1.977,6.253 1.295,6.676 0.515,6.676 C0.262,6.668 0.082,6.839 0.054,7.069 C-0.016,7.670 -0.017,8.283 0.050,8.889 C0.076,9.114 0.345,9.282 0.574,9.282 C1.269,9.264 1.937,9.695 2.217,10.378 C2.496,11.060 2.317,11.855 1.770,12.356 C1.600,12.514 1.578,12.776 1.722,12.959 C2.093,13.433 2.519,13.863 2.985,14.240 C3.168,14.387 3.434,14.367 3.593,14.191 C4.071,13.662 4.926,13.466 5.584,13.743 C6.273,14.032 6.706,14.730 6.664,15.479 C6.650,15.715 6.823,15.920 7.056,15.946 C7.361,15.982 7.668,16.000 7.976,16.000 C8.268,16.000 8.560,15.984 8.852,15.951 C9.084,15.926 9.255,15.726 9.248,15.493 C9.221,14.752 9.660,14.066 10.340,13.787 C10.997,13.518 11.843,13.715 12.318,14.238 C12.475,14.410 12.736,14.431 12.920,14.288 C13.398,13.913 13.832,13.483 14.212,13.009 C14.359,12.825 14.339,12.559 14.164,12.401 C13.609,11.897 13.428,11.094 13.717,10.405 C13.988,9.756 14.645,9.321 15.351,9.321 L15.449,9.323 C15.678,9.342 15.889,9.165 15.917,8.931 C15.987,8.329 15.988,7.718 15.920,7.112 ZM7.998,10.685 C6.529,10.685 5.335,9.488 5.335,8.017 C5.335,6.545 6.529,5.348 7.998,5.348 C9.467,5.348 10.661,6.545 10.661,8.017 C10.661,9.488 9.467,10.685 7.998,10.685 Z" />
+                    </svg>
+                  </i>
+                  <span>Settings</span>
+                  <i className="ic">
+                    <svg x={0} y={0} viewBox="0 0 7 11">
+                      <path d="M6.783,6.060 L2.231,10.803 C1.941,11.104 1.472,11.104 1.182,10.803 C0.893,10.501 0.893,10.012 1.182,9.710 L5.210,5.514 L1.182,1.317 C0.893,1.015 0.893,0.526 1.182,0.224 C1.472,-0.077 1.941,-0.077 2.231,0.224 L6.783,4.967 C6.928,5.118 7.000,5.316 7.000,5.514 C7.000,5.711 6.927,5.909 6.783,6.060 Z" />
+                    </svg>
+                  </i>
+                </Link>
+              </div>
+              <div
+                id="collapseSettings"
+                className={`SubmenuItems collapse ${
+                  allAside.setting ? "mm-show" : "extra"
+                }`}
+                aria-labelledby="headingSettings"
+                data-parent="#accordion"
+              >
+                <ul>
+                  {/* <li onClick={handleMenuClick}>
                                     <Link to="shipping_Address">Shipping Address</Link>
                                 </li> */}
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="billing_Address">Billing Address</NavLink>
-                                </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="billing_Address">Billing Address</NavLink>
+                  </li>
 
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="change_password">Password Change</NavLink>
-                                </li>
-                                <li onClick={handleMenuClick}>
-                                    <NavLink to="change_txnpassword">Change Tpin</NavLink>
-                                </li>
-                                {/* <li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="change_password">Password Change</NavLink>
+                  </li>
+                  <li onClick={handleMenuClick}>
+                    <NavLink to="change_txnpassword">Change Tpin</NavLink>
+                  </li>
+                  {/* <li>
                                     <Link to="Retailer_authentication">OTP Security</Link>
                                 </li> */}
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="MenuItem ">
-                        {/* <div className="card-header">
+                </ul>
+              </div>
+            </div>
+            <div className="MenuItem ">
+              {/* <div className="card-header">
                             <Link to="activity-logs">
 
                                 <MdOutlineNotificationsActive className="mr-2" />
@@ -1758,8 +2253,8 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                                 <span>Activity Log</span>
                             </Link>
                         </div> */}
-                    </div>
-                    {/* <div className="MenuItem ">
+            </div>
+            {/* <div className="MenuItem ">
                         <div className="card-header">
                             <Link to="aesp-device-drivers">
                                 <i>
@@ -1771,8 +2266,8 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </Link>
                         </div>
                     </div> */}
-                    <div className="MenuItem ">
-                        {/* <div className="card-header">
+            <div className="MenuItem ">
+              {/* <div className="card-header">
                             <Link to="tds_certificate">
                                 <i>
                                     <svg viewBox="0 0 426.48 426.48">
@@ -1782,7 +2277,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                                 <span>TDS Certificate</span>
                             </Link>
                         </div> */}
-                        {/* <div className="MenuItem">
+              {/* <div className="MenuItem">
                             <div className="card-header">
                                 <div className="new-label">
                                     <span>New</span>
@@ -1797,8 +2292,8 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                                 </a>
                             </div>
                         </div> */}
-                    </div>
-                    {/* <div className="MenuItem">
+            </div>
+            {/* <div className="MenuItem">
                         <div className="card-header">
 
                             <a href="#">
@@ -1829,8 +2324,7 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </a>
                         </div>
                     </div> */}
-
-                    {/* <div className="MenuItem">
+            {/* <div className="MenuItem">
                         <div className="card-header" onClick={handleMenuClick}>
                             <a href="#" onClick={logOut}>
                                 <i>
@@ -1842,10 +2336,34 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                             </a>
                         </div>
                     </div> */}
-                </div></div > <div id="mCSB_1_scrollbar_vertical" className="mCSB_scrollTools mCSB_1_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical" style={{ display: 'block' }}><div className="mCSB_draggerContainer"><div id="mCSB_1_dragger_vertical" className="mCSB_dragger" style={{ position: 'absolute', minHeight: 50, height: 154, top: 0, display: 'block', maxHeight: '291.6px' }}><div className="mCSB_dragger_bar" style={{ lineHeight: 50 }} /></div><div className="mCSB_draggerRail" /></div></div></aside >
-            <div id="myDIV" onClick={clickoVer}></div>
-        </>
-    )
+          </div>
+        </div>{" "}
+        <div
+          id="mCSB_1_scrollbar_vertical"
+          className="mCSB_scrollTools mCSB_1_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical"
+          style={{ display: "block" }}
+        >
+          <div className="mCSB_draggerContainer">
+            <div
+              id="mCSB_1_dragger_vertical"
+              className="mCSB_dragger"
+              style={{
+                position: "absolute",
+                minHeight: 50,
+                height: 154,
+                top: 0,
+                display: "block",
+                maxHeight: "291.6px",
+              }}
+            >
+              <div className="mCSB_dragger_bar" style={{ lineHeight: 50 }} />
+            </div>
+            <div className="mCSB_draggerRail" />
+          </div>
+        </div>
+      </aside>
+      <div id="myDIV" onClick={clickoVer}></div>
+    </>
+  );
 }
-export default AsideAdmin
-
+export default AsideAdmin;
