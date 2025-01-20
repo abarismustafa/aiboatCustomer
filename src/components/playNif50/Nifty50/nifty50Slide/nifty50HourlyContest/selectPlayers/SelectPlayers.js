@@ -235,11 +235,7 @@ export const SelectPlayers = ({ walletShowHeader, walletData }) => {
         }
     }
 
-
-
     //phonePay
-
-
 
 
     useEffect(() => {
