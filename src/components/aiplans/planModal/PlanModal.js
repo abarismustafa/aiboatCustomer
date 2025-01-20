@@ -1,13 +1,15 @@
 import { ToastContainer } from "react-toastify"
-import { checkoutContestParticipate } from "../../../api/login/Login";
+import { addPlanPurchage, checkoutContestParticipate, slelectPaymetSet } from "../../../api/login/Login";
 
 import useRazorpay from "react-razorpay";
 import { useParams } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Modal } from "react-bootstrap";
-const PlanModal = ({ walletShowHeader, walletData }) => {
+import { toastSuccessMessage } from "../../compeleteRegister/ToastShare";
+import { toastSuccessMessageError } from "../../../common/tostShow/TostShow";
+const PlanModal = (props) => {
     const params = useParams()
-    // console.log(params)
+    // console.log(props?.item?.prices)
 
 
     const length = 4
@@ -50,10 +52,9 @@ const PlanModal = ({ walletShowHeader, walletData }) => {
 
 
     const [formData, setFormData] = useState({
-        prediction: '',
+        package_id: '',
         paymentMethod: "",
         // paymentGate: '',
-        contest: ""
     })
 
     console.log(formData);
@@ -74,10 +75,10 @@ const PlanModal = ({ walletShowHeader, walletData }) => {
 
     const contestPublicGet = async () => {
         try {
-            const res = await contestPublic(params?.id)
-            // console.log(res?.data);
+            // const res = await contestPublic(params?.id)
+            // // console.log(res?.data);
 
-            setContestPublicGetData(res?.data?.data);
+            // setContestPublicGetData(res?.data?.data);
 
         } catch (error) {
 
@@ -106,16 +107,16 @@ const PlanModal = ({ walletShowHeader, walletData }) => {
 
 
     const submitData = async () => {
-        const clone = { ...formData, contest: params?.id }
-        // console.log('clone', clone);
+        const clone = {
+            ...formData, package_id: props?.item?._id
+        }
+        console.log('clone', clone);
         try {
-            const res = await add_participateContestant(clone)
-            // console.log(res?.data?.data);
-            // setRozarPayData(res?.data?.data)
+            const res = await addPlanPurchage(clone)
             if (res?.data?.error == false) {
                 toastSuccessMessage(res?.data?.message)
-                handleClose()
-                walletShowHeader()
+                // handleClose()
+                props?.walletShowHeader()
                 if (formData?.paymentMethod == "razorpay") {
                     handlePayment(res?.data?.data);
                 }
@@ -194,7 +195,7 @@ const PlanModal = ({ walletShowHeader, walletData }) => {
     const checkoutPayment = async (data) => {
         try {
             const res = await checkoutContestParticipate(data)
-            walletShowHeader()
+            // walletShowHeader()
 
             // console.log(res);
 
@@ -234,16 +235,11 @@ const PlanModal = ({ walletShowHeader, walletData }) => {
     return (
         <>
             <Modal className="pkg-details-modal"
+                {...props}
                 size="lg"
-                show={show}
-                onHide={handleClose}
-                backdrop="static"
-                keyboard={false}
-
-                style={{
-                    zIndex: 1050,
-
-                }}>
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
                 <Modal.Header closeButton className="pkg-details-header">
                     <Modal.Title className="pkg-details-title">Package Purchase Details</Modal.Title>
                 </Modal.Header>
@@ -251,21 +247,31 @@ const PlanModal = ({ walletShowHeader, walletData }) => {
                     <div className="pkg-info-grid">
                         <div className="pkg-info-item">
                             <div className="pkg-info-label">Current Balance</div>
-                            <div className="pkg-info-value">₹ {walletData?.main_wallet ?? 0}</div>
+                            <div className="pkg-info-value">₹ {props?.walletData?.main_wallet ?? 0}</div>
                         </div>
                         <div className="pkg-info-item">
                             <div className="pkg-info-label">
                                 Available Balance after transaction
                             </div>
                             <div className="pkg-info-value">
-
                                 {
-                                    (walletData?.main_wallet - (contestPublicGetData?.isFree ? 0 : contestPublicGetData?.entryFee)) < 0
+                                    Math.max(
+                                        0,
+                                        (props?.walletData?.main_wallet || 0) -
+                                        (props?.item?.prices?.[0]?.TotalPrice || 0)
+                                    )
+                                        .toFixed(2)
+                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                                }
+                                {/* {
+                                    (props?.walletData?.main_wallet - (props?.item?.prices[0]?.TotalPrice ? 0 : props?.item?.prices[0]?.TotalPrice)) < 0
                                         ? "₹ 0"
-                                        : `₹ ${(walletData?.main_wallet - (contestPublicGetData?.isFree ? 0 : contestPublicGetData?.entryFee))
+                                        : `₹ ${(props?.walletData?.main_wallet - (props?.item?.prices[0]?.TotalPrice ? 0 : props?.item?.prices[0]?.TotalPrice))
                                             .toFixed(2)
                                             .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`
-                                }
+                                } */}
+
+
                                 {/* {(walletData2?.main_wallet - saleRate?.real_value) < 0 
       ? ` (Available Balance after transaction: ₹ ${Math.abs(walletData2?.main_wallet - saleRate?.real_value)
             .toFixed(2)
@@ -280,7 +286,7 @@ const PlanModal = ({ walletShowHeader, walletData }) => {
                             <tbody>
                                 <tr>
                                     <td>Entry MRP</td>
-                                    <td>₹ {contestPublicGetData?.isFree == true ? '0' : contestPublicGetData?.entryFee}</td>
+                                    <td>₹ {props?.item?.prices[0]?.TotalPrice == true ? '0' : props?.item?.prices[0]?.TotalPrice}</td>
                                 </tr>
                                 {/* <tr>
                                     <td>Sale Price</td>
@@ -292,14 +298,13 @@ const PlanModal = ({ walletShowHeader, walletData }) => {
                                 </tr> */}
                                 <tr className="total-row">
                                     <td>Total Amount</td>
-                                    <td>₹ {contestPublicGetData?.isFree == true ? '0' : contestPublicGetData?.entryFee}</td>
+                                    <td>₹ {props?.item?.prices[0]?.TotalPrice == true ? '0' : props?.item?.prices[0]?.TotalPrice}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
 
                     <div className="pkg-tpin-section">
-
                         <label className="pkg-tpin-label">Select Method  <span className="text-danger">*</span></label>
                         <select className="form-select mb-3" aria-label="Default select example" name="paymentMethod" onChange={changeHandle}>
                             <option selected disabled>select Method</option>

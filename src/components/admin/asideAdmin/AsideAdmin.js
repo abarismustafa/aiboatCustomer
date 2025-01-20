@@ -1190,13 +1190,13 @@ function AsideAdmin({ isActive, overlayClick, handleMenuClick, clickoVer, tokenN
                         <div id="collapseSettings" className={`SubmenuItems collapse ${allAside.manageEpin ? "mm-show" : "extra"}`} aria-labelledby="headingSettings" data-parent="#accordion">
                             <ul>
                                 <li onClick={handleMenuClick}>
-                                    <NavLink to="add-withdraw-request">Request E-pin </NavLink>
+                                    <NavLink to="RequestEpin">Request E-pin </NavLink>
                                 </li>
                                 <li onClick={handleMenuClick}>
-                                    <NavLink to="pending-list-withdraw-request/Pending">Available E-pin </NavLink>
+                                    <NavLink to="remaining-epin">Available E-pin </NavLink>
                                 </li>
                                 <li onClick={handleMenuClick}>
-                                    <NavLink to="approved-list-withdraw-request/Approved">Used E-pin </NavLink>
+                                    <NavLink to="user-total-epin">Used E-pin </NavLink>
                                 </li>
 
                                 <li onClick={handleMenuClick}>

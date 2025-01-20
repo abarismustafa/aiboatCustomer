@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Getprofile, cloudImage, countryGet, languageGet, updateProfilee } from "../../../api/login/Login";
+import { Getprofile, cloudImage, countryGet, currencyListMain, languageGet, updateProfilee } from "../../../api/login/Login";
 import { ToastContainer, toast } from "react-toastify";
 import { FaCamera } from "react-icons/fa";
 import { BiCamera } from "react-icons/bi";
@@ -10,6 +10,9 @@ import { baseUrlImage } from "../../../baseUrl";
 function Profile() {
     const [loader1, setloader1] = useState(false)
     const [country, setCountry] = useState()
+    const [currency, setCurrency] = useState(null)
+    // console.log(currency);
+
     const [language, setLanguage] = useState()
     const [profileImage, setProfileImage] = useState()
     const [modalShow, setModalShow] = useState(false);
@@ -41,7 +44,8 @@ function Profile() {
         presentAddr: '',
         educationQualification: '',
         pinCode: '',
-        locking_amt: ''
+        locking_amt: '',
+        currency_id: '',
     });
 
     const handleChange = (e) => {
@@ -58,8 +62,14 @@ function Profile() {
         setCountry(res?.data?.data)
     }
     const getlaguage = async () => {
-        const res = await languageGet()
-        setLanguage(res?.data?.data)
+        try {
+            const res = await languageGet()
+            setLanguage(res?.data?.data)
+            const resCurrency = await currencyListMain()
+            setCurrency(resCurrency?.data)
+        } catch (error) {
+
+        }
 
     }
 
@@ -343,10 +353,19 @@ function Profile() {
                                         })}
                                     </select>
                                 </div>
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="txtNumId">Currency</label>
+                                    <select class="form-select" aria-label="Default select example" name="currency_id" value={initialValues.currency_id} onChange={handleChange}>
+                                        <option selected>Select Language</option>
+                                        {currency && currency?.map((item) => {
+                                            return <option value={item?._id} key={item?._id}>{item?.currency_name}</option>
+                                        })}
+                                    </select>
+                                </div>
 
                                 <div className="form-group col-md-12 text-align-center">
                                     <label>&nbsp;</label>
-                                    <button type="button" id="btnSearch" className="btn btn-primary" onClick={updateProfile}>
+                                    <button type="button" id="btnSearch" className="btn btn-primary" onClick={() => updateProfile()}>
                                         Profile Update
                                         {
                                             loader1 && <div style={{ height: "16px", width: "16px" }} className="spinner-border" role="status">

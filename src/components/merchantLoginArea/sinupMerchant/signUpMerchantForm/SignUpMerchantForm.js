@@ -7,7 +7,7 @@ import { MdEmail } from "react-icons/md";
 import { TiTick } from "react-icons/ti";
 import { useEffect, useRef, useState } from "react";
 import TabSignUp from "../tabSinUp/TabSignUp";
-import { CountryList, emailSinup, emailSinupOtp, isEmailExits, isEmailExits2, isVerifiedMobileOtp, registerUser, userType, resendOtpslogin } from "../../../../api/login/Login";
+import { CountryList, emailSinup, emailSinupOtp, isEmailExits, isEmailExits2, isVerifiedMobileOtp, registerUser, userType, resendOtpslogin, currencyListMain, referVerifyPost } from "../../../../api/login/Login";
 import { getUserDetails } from "../../../../utils/localStorage";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
@@ -25,6 +25,8 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
 }) {
     // console.log(countryCode);
     // console.log(initalValue.mobileNo.length);
+
+    const [referData, setReferData] = useState(null)
 
     const [showEmailOtp, setShowEmailOtp] = useState(false);
     const timerRef = useRef(null);
@@ -123,10 +125,17 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
         // email: '',
         mobile: mobileId,
         user_type_id: user_idcus,
-
         name: '',
         password: '',
+        repassword: '',
+        currency_id: '',
+        position: '',
+        sponsor_id: '',
         refer_id: param?.id && param?.id ? param?.id : ''
+    })
+    const [referDataInitial, setReferDataInitial] = useState({
+        refer_id: '',
+        position: 'left'
     })
     // console.log("register", resiter);
 
@@ -317,7 +326,39 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
         setMessage2('');
         setError2('');
         setOtp(new Array(length).fill(''));
+    }
+    const [currencyData, setCurrencyData] = useState(null)
+    const dataGet = async () => {
+        try {
+            const res = await currencyListMain()
+            setCurrencyData(res?.data);
 
+        } catch (error) {
+
+        }
+    }
+
+    const referOnchange = (e) => {
+        const clone = { ...referDataInitial }
+        const value = e.target.value
+        const name = e.target.name
+        clone[name] = value
+        setReferDataInitial(clone)
+    }
+
+    const getRefer = async () => {
+        try {
+            const res = await referVerifyPost(referDataInitial)
+            if (res?.data?.error == false) {
+                setReferData(res?.data);
+                alert('Success')
+            } else {
+                alert('Servier Side Error!')
+            }
+
+        } catch (error) {
+
+        }
     }
     const submitOtp = async () => {
         // debugger
@@ -357,7 +398,7 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
 
     const handleSubmit = async (event) => {
         setloader5(true)
-        const cloen = { ...resiter, mobile: mobileId, email: emailUser, state: selectedState }
+        const cloen = { ...resiter, mobile: mobileId, email: emailUser, state: selectedState, position: referDataInitial?.position, refer_id: referDataInitial?.refer_id }
         console.log("cloen", cloen)
 
         event.preventDefault()
@@ -860,7 +901,7 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
 
 
     useEffect(() => {
-        setResister(prev => ({ ...prev, password: initalValue.mobileNo.slice(3, 13) }));
+        setResister(prev => ({ ...prev, password: initalValue.mobileNo.slice(3, 13), repassword: initalValue.mobileNo.slice(3, 13) }));
     }, [initalValue.mobileNo]);
 
     useEffect(() => {
@@ -897,6 +938,10 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
         setOtp1(new Array(length).fill(''));
     }, [showEmailOtp]);
     console.log("selectedUserType", selectedUserType)
+
+    useEffect(() => {
+        dataGet()
+    }, [])
 
     return (
         <>
@@ -1181,9 +1226,6 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
                                     onKeyDown={handleKeyPress}
                                     value={initalValue.mobileNo}
                                     onChange={handleChange}
-
-
-
                                 />
                                 {veriFiedIconMobile && (
                                     <div className="setVerufied">
@@ -1216,7 +1258,7 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
                             <div className="input-group mb-1">
                                 <span className="input-group-text" id="basic-addon1"><RiLockPasswordFill /></span>
 
-                                <input type="text" className="form-control" placeholder="Enter Your Password" name="password" disabled value={resiter.password} onChange={handleResiter} />
+                                <input type="text" className="form-control" placeholder="Enter Your Password" name="password" value={resiter.password} onChange={handleResiter} />
                             </div>
                             {/* <p style={{ color: "red", marginBottom: '2px' }}>
                                 {errorValue.name}
@@ -1227,7 +1269,7 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
                             <div className="input-group mb-1">
                                 <span className="input-group-text" id="basic-addon1"><RiLockPasswordFill /></span>
 
-                                <input type="text" className="form-control" placeholder="Enter Your Password" name="password" disabled value={resiter.password} onChange={handleResiter} />
+                                <input type="text" className="form-control" placeholder="Enter Your Password" name="repassword" value={resiter.repassword} onChange={handleResiter} />
                             </div>
                             {/* <p style={{ color: "red", marginBottom: '2px' }}>
                                 {errorValue.name}
@@ -1235,23 +1277,52 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
                         </div>
 
                         <div className="col-lg-6   mb-3">
-                            <label htmlFor="">I have a referral code! <span style={{ color: 'red' }}>*</span></label>
-                            <div className="input-group mb-1">
-                                <span className="input-group-text" id="basic-addon1"><RiLockPasswordFill /></span>
-                                <input type="text" className="form-control" placeholder="Enter Your I have a referral code!" name="refer_id" value={resiter.refer_id} onChange={handleResiter} />
-                            </div>
-                            {/* <p style={{ color: "red", marginBottom: '2px' }}>{errorValue.refer_id}</p> */}
-                        </div>
-                        <div className="col-lg-6   mb-3">
-                            <label htmlFor="">Select Position <span style={{ color: 'red' }}>*</span></label>
-                            <select className="form-select" aria-label="Default select example">
-                                <option selected>Open this select menu</option>
-                                <option value={1}>Left</option>
-                                <option value={2}>Right</option>
-
+                            <label htmlFor="">Currency <span style={{ color: 'red' }}>*</span></label>
+                            <select className="form-select" aria-label="Default select example" name="currency_id" value={resiter.currency_id} onChange={handleResiter}>
+                                <option selected>Open this select Currency</option>
+                                {currencyData && currencyData?.map((item) => {
+                                    return <option value={item?._id} key={item?._id}>{item?.currency_name}</option>
+                                })}
                             </select>
                             {/* <p style={{ color: "red", marginBottom: '2px' }}>{errorValue.refer_id}</p> */}
                         </div>
+
+
+                        <div className="col-lg-6   mb-3">
+                            <label htmlFor="">Select Position <span style={{ color: 'red' }}>*</span></label>
+                            <select className="form-select" aria-label="Default select example" name="position" value={referDataInitial.position} onChange={referOnchange}>
+                                <option selected>Open this select menu</option>
+                                <option value={'left'}>Left</option>
+                                <option value={'right'}>Right</option>
+                            </select>
+                            {/* <p style={{ color: "red", marginBottom: '2px' }}>{errorValue.refer_id}</p> */}
+                        </div>
+
+                        <div className="col-lg-6 mb-1">
+                            <label htmlFor="">I have a referral code! <span style={{ color: 'red' }}>*</span></label>
+                            <div className="input-group mb-1">
+                                <span className="input-group-text" id="basic-addon1"><RiLockPasswordFill /></span>
+                                <input type="text" className="form-control" placeholder="Enter Your I have a referral code!" name="refer_id" value={referDataInitial.refer_id} onChange={referOnchange} />
+                            </div>
+                            {/* <p style={{ color: "red", marginBottom: '2px' }}>{errorValue.refer_id}</p> */}
+                        </div>
+                        <div className="col-lg-6 mt-4">
+                            <button type="button" disabled={!referDataInitial?.refer_id} onClick={getRefer} className="btn btn-success mt-2 w-100">Get Refer</button>
+                        </div>
+                        {console.log(referData)
+                        }
+                        {referData && (
+                            <div className="col-lg-12">
+                                <div className="refer-details">
+                                    <div className="mr-1">
+                                        <span style={{ color: 'red' }}> Name: {referData?.data?.name} ,</span>
+                                    </div>
+                                    <div>
+                                        <span style={{ color: 'red' }}>Refer ID: {referData?.data?.refer_id}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         {/* <NewTabSignUp data={data} count={count} tabChange={tabChange} resiter={resiter} handleResiter2={handleResiter2} /> */}
                         {selectedUserType !== "Super Distributor" && (
@@ -1266,13 +1337,15 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
                                         className="form-control"
                                         placeholder="Enter Refer ID"
                                         name="refer_id"
-                                        value={resiter.refer_id}
+                                        value={resiter?.refer_id}
                                         onChange={handleResiter}
                                     />
                                 </div>
                                 <p style={{ color: "red", marginBottom: '2px' }}>{errorValue.refer_id}</p>
                             </div>
                         )}
+
+
 
 
                         {selectedUserType !== "Super Distributor" && (

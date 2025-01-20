@@ -4521,3 +4521,12 @@ table tr:nth-child(even) td {
 }
 
 /* play50 */
+
+.refer-details {
+    border: 1px solid #0003ff;
+    padding: 5px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

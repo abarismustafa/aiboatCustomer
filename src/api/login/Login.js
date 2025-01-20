@@ -1294,6 +1294,10 @@ export const getServiceCategoryid = () => {
 
 // travelApiIntigrate
 
+export const currencyListMain = (data) => {
+  return axiosInstance.get(`${baseUrl}currency/public`);
+};
+
 
 
 
@@ -1579,4 +1583,39 @@ export const withdrowRports = (value) => {
   });
 };
 // console.log(window.localStorage.getItem('userToken'));
+
+
+export const plan = (value) => {
+  // console.log(value);
+  return axios.get(`${baseUr2}Mlm_Plan/public`, {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${window.localStorage.getItem('userToken')}`,
+    },
+  });
+};
+
+
+export const referVerifyPost = (value) => {
+  // console.log('contest', value);
+
+  return axios.post(`${baseUrl}auth/referVerify`, value, {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${window.localStorage.getItem('userToken')}`,
+    },
+  });
+};
+
+export const addPlanPurchage = (value) => {
+  // console.log(value);
+
+  return axios.post(`${baseUr2}MlmPackagePurchase/pay`, value, {
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      Authorization: `Bearer ${window.localStorage.getItem('userToken')}`,
+    },
+  });
+};
+
 

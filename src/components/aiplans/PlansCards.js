@@ -4,48 +4,67 @@ import CardModuls from "./PlanCardModuls";
 import { Link } from "react-router-dom";
 import PlanModal from "./planModal/PlanModal";
 
-export default function PlansCards(props) {
+export default function PlansCards({ planData, walletShowHeader, walletData }) {
+  const [modalShow, setModalShow] = useState(false);
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const openModal = () => {
+    setModalShow(true)
+  }
   return (
-    <div className="card text-center">
-      <CardModuls show={show} handleClose={handleClose} />
-      <div className="card-body">
-        <h5 className="card-title fs-1 mb-4">{props.title}</h5>
-        <h6 className="card-subtitle mb-3 fw-normal text-muted">{props.package}</h6>
-        <div className="border border-1 bordder-black mb-3"></div>
-        <ul className="list-unstyled">
-          <li className="mt-2 d-flex align-items-center justify-content-between">
-            <span><span className="text-success">✔</span> Matching Bonus: $5 USD</span>
-            <button type="button" className="btn btn-link text-decoration-none" title="More info" onClick={handleShow}>
-              <CiCircleQuestion />
-            </button>
-          </li>
-          <li className="mt-2 d-flex align-items-center justify-content-between">
-            <span><span className="text-success">✔</span> Referral Income: $25.00 USD</span>
-            <button type="button" className="btn btn-link text-decoration-none" title="More info" onClick={handleShow}>
-              <CiCircleQuestion />
-            </button>
-          </li>
-          <li className="mt-2 d-flex align-items-center justify-content-between ">
-            <span><span className="text-success">✔</span> level Income: $25 USD - $0.5 USD</span>
-            <button type="button" className="btn btn-link  text-decoration-none" title="More info" onClick={handleShow}>
-              <CiCircleQuestion />
-            </button>
-          </li>
-          <li className="mt-2 d-flex align-items-center justify-content-between ">
-            <span><span className="text-success">✔</span>Earn upto 760 USD $ Daily From Matching Bonus </span>
-            <button type="button" className="btn btn-link text-decoration-none" title="More info" onClick={handleShow}>
-              <CiCircleQuestion />
-            </button>
-          </li>
-        </ul>
-        {/* <Link to="/depositmethod" className="btn btn-outline-primary w-100">Subscribe</Link> */}
-        <button type="button" className="btn btn-outline-primary w-100">Subscribe</button>
-      </div>
-      {/* <PlanModal /> */}
-    </div>
+    <>
+      {planData && planData?.map((item) => {
+        console.log(item);
+
+        return <div className="col-4" key={item?._id}>
+          <div className="card text-center">
+            <CardModuls show={show} handleClose={handleClose} />
+            <div className="card-body">
+              <h5 className="card-title fs-1 mb-4">{item?.name}</h5>
+              <h6 className="card-subtitle mb-3 fw-normal text-muted">${item?.prices[0]?.BasePrice}USD</h6>
+              <div className="border border-1 bordder-black mb-3"></div>
+              <ul className="list-unstyled">
+                <li className="mt-2 d-flex align-items-center justify-content-between">
+                  <span><span className="text-success">✔</span> Matching Bonus: ${item?.MatchBonus} USD</span>
+                  <button type="button" className="btn btn-link text-decoration-none" title="More info" onClick={handleShow}>
+                    <CiCircleQuestion />
+                  </button>
+                </li>
+                <li className="mt-2 d-flex align-items-center justify-content-between">
+                  <span><span className="text-success">✔</span> Referral Income: ${item?.ReferIncome} USD</span>
+                  <button type="button" className="btn btn-link text-decoration-none" title="More info" onClick={handleShow}>
+                    <CiCircleQuestion />
+                  </button>
+                </li>
+                <li className="mt-2 d-flex align-items-center justify-content-between ">
+                  <span><span className="text-success">✔</span> level Income: ${item?.levelincome} USD</span>
+                  <button type="button" className="btn btn-link  text-decoration-none" title="More info" onClick={handleShow}>
+                    <CiCircleQuestion />
+                  </button>
+                </li>
+                <li className="mt-2 d-flex align-items-center justify-content-between ">
+                  <span><span className="text-success">✔</span>Earn upto {item?.earnUpto} USD $ Daily From Matching Bonus </span>
+                  <button type="button" className="btn btn-link text-decoration-none" title="More info" onClick={handleShow}>
+                    <CiCircleQuestion />
+                  </button>
+                </li>
+              </ul>
+              {/* <Link to="/depositmethod" className="btn btn-outline-primary w-100">Subscribe</Link> */}
+              <button type="button" className="btn btn-outline-primary w-100" onClick={openModal}>Subscribe</button>
+            </div>
+            <PlanModal
+              show={modalShow}
+              onHide={() => setModalShow(false)}
+              item={item}
+              walletShowHeader={walletShowHeader}
+              walletData={walletData}
+            />
+          </div>
+        </div>
+      })}
+    </>
   )
 }

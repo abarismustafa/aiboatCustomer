@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PlansCards from "./PlansCards";
+import { plan } from "../../api/login/Login";
 
 export default function AiPlans({ walletShowHeader, walletData }) {
-    const [show, setShow] = useState(false);
+    const [planData, setPlanData] = useState(null)
+    const planGet = async () => {
+        try {
+            const res = await plan()
+            setPlanData(res?.data?.data);
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+        } catch (error) {
+
+        }
+    }
+    useEffect(() => {
+        planGet()
+    }, [])
     return (
         <div>
             <div className="PageHeading">
@@ -16,9 +26,8 @@ export default function AiPlans({ walletShowHeader, walletData }) {
                     <div className="card-header"><span>plan</span></div>
                     <div className="card-body p-1" style={{ background: "#bcd2f3" }}>
                         <div className="row mt-3 mx-2">
-                            <div className="col-4">
-                                <PlansCards show={show} handleClose={handleClose} handleShow={handleShow} walletShowHeader={walletShowHeader} walletData={walletData} title={"Basic"} package={"$130.00 USD"} />
-                            </div>
+                            <PlansCards planData={planData} walletShowHeader={walletShowHeader} walletData={walletData} title={"Basic"} package={"$130.00 USD"} />
+
                             {/* <div className="col-4">
                                 <PlansCards title={"Optimal"} package={"$100.00 USD"} />
                             </div>
@@ -38,6 +47,6 @@ export default function AiPlans({ walletShowHeader, walletData }) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

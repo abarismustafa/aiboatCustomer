@@ -191,6 +191,11 @@ import ReferralCommissions from './pages/referralcommissions';
 import BinaryCommission from './pages/binarycommission';
 import { Transactions } from './pages/transactions';
 import Investment from './pages/investment';
+import RequestEPinPage from './pages/manageEpIn/requestEpin';
+import RequestEpinAdd from './components/manageEpIn/requestEpin/requestEpinAdd/RequestEpinAdd';
+import AvialbleEpinPage from './pages/manageEpIn/avialbleEpin';
+import AvialbleEpinRecharge from './components/manageEpIn/avialbleEpin/avialbleEpinRecharge/AvialbleEpinRecharge';
+import UsedEpinPage from './pages/manageEpIn/usedEpin';
 
 
 function App() {
@@ -424,6 +429,12 @@ function App() {
           <Route path="aibot/rewards-reports" element={<RewardsReports />} />
           <Route path="aibot/supports-reports" element={<SupportsReports />} />
           <Route path="aibot/supports-create" element={<SupportsForm />} />
+
+          <Route path="RequestEpin" element={<RequestEPinPage />} />
+          <Route path="RequestEpin-add" element={<RequestEpinAdd />} />
+          <Route path="remaining-epin" element={<AvialbleEpinPage />} />
+          <Route path="epin-recharge-add" element={<AvialbleEpinRecharge />} />
+          <Route path="user-total-epin" element={<UsedEpinPage />} />
 
 
           {/* .................. Atif ................ */}
