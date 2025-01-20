@@ -1,24 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Modal } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom"
-import { add_participateContestant, checkoutContestParticipate, contestPublic, paymentgatewaycheckout, rozarPayApi, slelectPaymetSet } from "../../../../../../api/login/Login";
-import { toastSuccessMessage, toastSuccessMessageError } from "../../../../../../common/tostShow/TostShow";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify"
+import { checkoutContestParticipate } from "../../../api/login/Login";
+
 import useRazorpay from "react-razorpay";
-import { not } from "ajv/dist/compile/codegen";
-
-
-
-export const SelectPlayers = ({ walletShowHeader, walletData }) => {
-
+import { useParams } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { Modal } from "react-bootstrap";
+const PlanModal = ({ walletShowHeader, walletData }) => {
     const params = useParams()
-    // console.log(params);
-
-
-    const [show, setShow] = useState(false);
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    // console.log(params)
 
 
     const length = 4
@@ -169,7 +158,7 @@ export const SelectPlayers = ({ walletShowHeader, walletData }) => {
                 handler: (res) => {
                     // console.log(res);
                     checkoutPayment(res)
-                    handleClose()
+                    // handleClose()
 
                 },
                 prefill: {
@@ -244,65 +233,6 @@ export const SelectPlayers = ({ walletShowHeader, walletData }) => {
     }, [])
     return (
         <>
-            <div className="PageHeading">
-                <h1>Nifty50 League</h1>
-            </div>
-
-            <div className="ContentArea">
-                <div className="card">
-                    <div className="card-body">
-                        <div className="row">
-                            <div className="col-xl-6 wid-100 mt-3">
-                                <div className="select-palyers">
-                                    <div className="select-palyers-header">
-                                        <p>You Can Predict Market Rate Up/Down here</p>
-                                    </div>
-                                    <div className="progress-bar" />
-                                    <div className="prediction-card">
-                                        <div className="market-info">
-                                            <p>Open: <span>{contestPublicGetData?.market_opening}</span> &nbsp;
-                                                {/* High: <span className="high">16695.5</span> */}
-                                                &nbsp; Low: <span className="low">{contestPublicGetData?.market_closing}</span></p>
-                                        </div>
-                                        <div className="market-logo">
-                                            <img src={`https://backoffice.adamclick.com/api/cloudinary/${contestPublicGetData?.banner_image}`} alt="Market Logo" />
-                                            <h2>{contestPublicGetData?.market_type}</h2>
-                                            <p>{contestPublicGetData?.market_market_current}</p>
-                                            {/* <p className="subtext">current rate</p> */}
-                                        </div>
-                                        <div className="prediction-buttons">
-                                            <button className="up">U</button>
-                                            <input type="number" placeholder="Prediction Value" name="prediction" value={formData?.prediction} onChange={changeHandle} />
-                                            <button className="down">D</button>
-                                        </div>
-                                        <button type="button" onClick={handleShow} disabled={!formData?.prediction} className="btn  btn-primary-next mt-3">Next</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-xl-6 wid-100 mt-3">
-                                <div className="select-palyers">
-                                    <div className="select-palyers-header">
-                                        <p>Ranking Rewards</p>
-                                    </div>
-                                    {contestPublicGetData && contestPublicGetData?.rankingRewards?.map((item) => {
-                                        return <div className="col-lg-6" key={item?._id}>
-                                            <div className="select-palyers">
-                                                {/* <strong>Maximum Rank :  {item?.maxRank}</strong>
-                                                <br /> */}
-                                                <strong>Rank :  {item?.minRank == item?.maxRank ? item?.minRank : item?.minRank + '-' + item?.maxRank}</strong>
-                                                <br />
-                                                <strong>Reward : {item?.reward}</strong>
-                                            </div>
-                                        </div>
-                                    })}
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <Modal className="pkg-details-modal"
                 size="lg"
                 show={show}
@@ -435,3 +365,5 @@ export const SelectPlayers = ({ walletShowHeader, walletData }) => {
         </>
     )
 }
+
+export default PlanModal

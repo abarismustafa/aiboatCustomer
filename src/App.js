@@ -187,6 +187,12 @@ import BinaryCommission from "./pages/binarycommission";
 import { Transactions } from "./pages/transactions";
 import Investment from "./pages/investment";
 
+// ---daud--import-----
+import OrderHistoryPage from "./pages/orderHistory";
+import PayoutStatementPage from "./pages/admin/payoutReport/payoutStatement";
+import TaxInvoice from "./components/orderHistory/taxInvoice/TaxInvoice";
+import PayoutStatementDetail from "./components/payoutReport/payoutStatement/payoutStatementDetail/PayoutStatementDetail";
+
 function App() {
   const [isLogin, setislogin] = useState(window.localStorage.getItem("login"));
   const [walletData, setWalletData] = useState();
@@ -607,7 +613,15 @@ function App() {
 
           {/* .................. Atif ................ */}
           <Route path="balancetransfer" element={<BalanceTransfer />} />
-          <Route path="plan" element={<Plans />} />
+          <Route
+            path="plan"
+            element={
+              <Plans
+                walletShowHeader={walletShowHeader}
+                walletData={walletData}
+              />
+            }
+          />
           <Route path="mytree" element={<MyTree />} />
           <Route path="depositmethod" element={<DepositMethod />} />
           <Route path="referralcommissions" element={<ReferralCommissions />} />
@@ -616,8 +630,18 @@ function App() {
           <Route path="investment" element={<Investment />} />
 
           {/* neRoute */}
+
+          {/* -----daud-------- */}
+
+          <Route path="OrderList" element={<OrderHistoryPage />} />
+          <Route path="/OrderList/taxInvoice" element={<TaxInvoice />} />
+
+          <Route path="PayoutST" element={<PayoutStatementPage />} />
+          <Route
+            path="/PayoutST/PayoutST-detail"
+            element={<PayoutStatementDetail />}
+          />
         </Route>
-        {/* <Route /> */}
       </Routes>
       {/* {isLogin == 'false' && <Footer />} */}
       {/* <div className='LayoutMain'>

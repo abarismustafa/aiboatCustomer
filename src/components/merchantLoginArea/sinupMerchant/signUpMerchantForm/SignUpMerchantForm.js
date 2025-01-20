@@ -1222,6 +1222,17 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
                                 {errorValue.name}
                             </p> */}
                         </div>
+                        <div className="col-lg-6   mb-3">
+                            <label htmlFor="">Confirm Password <span style={{ color: 'red' }}>*</span></label>
+                            <div className="input-group mb-1">
+                                <span className="input-group-text" id="basic-addon1"><RiLockPasswordFill /></span>
+
+                                <input type="text" className="form-control" placeholder="Enter Your Password" name="password" disabled value={resiter.password} onChange={handleResiter} />
+                            </div>
+                            {/* <p style={{ color: "red", marginBottom: '2px' }}>
+                                {errorValue.name}
+                            </p> */}
+                        </div>
 
                         <div className="col-lg-6   mb-3">
                             <label htmlFor="">I have a referral code! <span style={{ color: 'red' }}>*</span></label>
@@ -1229,6 +1240,16 @@ function SignUpMerchantForm({ initalValue, handleChange, mobileGenerateOtpMobile
                                 <span className="input-group-text" id="basic-addon1"><RiLockPasswordFill /></span>
                                 <input type="text" className="form-control" placeholder="Enter Your I have a referral code!" name="refer_id" value={resiter.refer_id} onChange={handleResiter} />
                             </div>
+                            {/* <p style={{ color: "red", marginBottom: '2px' }}>{errorValue.refer_id}</p> */}
+                        </div>
+                        <div className="col-lg-6   mb-3">
+                            <label htmlFor="">Select Position <span style={{ color: 'red' }}>*</span></label>
+                            <select className="form-select" aria-label="Default select example">
+                                <option selected>Open this select menu</option>
+                                <option value={1}>Left</option>
+                                <option value={2}>Right</option>
+
+                            </select>
                             {/* <p style={{ color: "red", marginBottom: '2px' }}>{errorValue.refer_id}</p> */}
                         </div>
 

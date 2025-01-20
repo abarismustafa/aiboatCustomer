@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import PlansCards from "./PlansCards";
 
-export default function AiPlans() {
+export default function AiPlans({ walletShowHeader, walletData }) {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
     return (
         <div>
             <div className="PageHeading">
@@ -13,7 +17,7 @@ export default function AiPlans() {
                     <div className="card-body p-1" style={{ background: "#bcd2f3" }}>
                         <div className="row mt-3 mx-2">
                             <div className="col-4">
-                                <PlansCards title={"Basic"} package={"$130.00 USD"} />
+                                <PlansCards show={show} handleClose={handleClose} handleShow={handleShow} walletShowHeader={walletShowHeader} walletData={walletData} title={"Basic"} package={"$130.00 USD"} />
                             </div>
                             {/* <div className="col-4">
                                 <PlansCards title={"Optimal"} package={"$100.00 USD"} />
