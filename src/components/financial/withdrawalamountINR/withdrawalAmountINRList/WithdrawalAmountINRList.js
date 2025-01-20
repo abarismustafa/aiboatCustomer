@@ -16,20 +16,20 @@ function WithdrawalAmountINRList() {
                                     <Link to={"/aibot/finance/withdrawal-amount-INR-create"} className='btn btn-primary'>Add Bank Details</Link>
                                 </div>
                                 <div id="banner-tblwrapper_wrapper" className="dataTables_wrapper no-footer">
-                                    
+
                                     <table id="banner-tblwrapper" className="table dataTable no-footer" role="grid" aria-describedby="banner-tblwrapper_info">
                                         <thead>
-                                                <tr role="row">
-                                                    <th style={{ width: '50px' }}>#</th>
-                                                    <th style={{ width: '150px' }}>Name</th>
-                                                    <th style={{ width: '150px' }}>Bank</th>
-                                                    <th style={{ width: '150px' }}>IFSC</th>
-                                                    <th style={{ width: '150px' }}>A/C Number</th>
-                                                    <th style={{ width: '150px' }}>Created</th>
-                                                    <th style={{ width: '150px' }}>Status</th>
-                                                    
-                                                </tr>
-                                            </thead>
+                                            <tr role="row">
+                                                <th style={{ width: '50px' }}>#</th>
+                                                <th style={{ width: '150px' }}>Name</th>
+                                                <th style={{ width: '150px' }}>Bank</th>
+                                                <th style={{ width: '150px' }}>IFSC</th>
+                                                <th style={{ width: '150px' }}>A/C Number</th>
+                                                <th style={{ width: '150px' }}>Created</th>
+                                                <th style={{ width: '150px' }}>Status</th>
+
+                                            </tr>
+                                        </thead>
                                         <tbody>
                                             <tr role="row">
                                                 <td colSpan={7}>

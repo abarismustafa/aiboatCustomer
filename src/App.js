@@ -428,7 +428,7 @@ function App() {
 
           {/* .................. Atif ................ */}
           <Route path="balancetransfer" element={<BalanceTransfer />} />
-          <Route path="plan" element={<Plans />} />
+          <Route path="plan" element={<Plans walletShowHeader={walletShowHeader} walletData={walletData} />} />
           <Route path="mytree" element={<MyTree />} />
           <Route path="depositmethod" element={<DepositMethod />} />
           <Route path="referralcommissions" element={<ReferralCommissions />} />
